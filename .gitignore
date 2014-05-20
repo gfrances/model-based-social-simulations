@@ -1,5 +1,7 @@
 
 
+src/mpiCode
+
 # Compiled source #
 *.sconsign.dblite
 *.swp
@@ -33,3 +35,4 @@ callgrind.out.*
 *.exe
 *.out
 *.app
+*.bin

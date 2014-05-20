@@ -1,60 +1,61 @@
-import os
-
-nameProgram = 'modelSim'
+import os, sys
+from subprocess import call
 
 agents = ['ModelAgent']
 world = 'Environment'
 namespaceAgents = ['Model']
 
-srcFiles = Split('main.cxx ModelAgent.cxx Environment.cxx EnvironmentConfig.cxx')
 
-pandoraPath = ARGUMENTS.get('pandora', '../../pandora/pandora')
-RCppPath = ARGUMENTS.get('rcpp','/home/xrubio/R/x86_64-pc-linux-gnu-library/3.0/Rcpp')
-RInsidePath = ARGUMENTS.get('rinside','/home/xrubio/R/x86_64-pc-linux-gnu-library/3.0/RInside')
+def get_envvar(varname):
+	return os.environ[varname] if varname in os.environ else ''
 
+pandora_path = ARGUMENTS.get('pandora', get_envvar('PANDORA_PATH'))
+rlib_path = ARGUMENTS.get('rlib', get_envvar('RLIB_PATH'))
+rcpp_path = rlib_path + '/Rcpp'
+rinside_path = rlib_path + '/RInside'
 
-import os, sys
-from subprocess import call
-
-release = ARGUMENTS.get('release', 1)
+release = ARGUMENTS.get('release', 0)
 extremeDebug = ARGUMENTS.get('edebug', 0)
 
 env = Environment(ENV=os.environ, CXX='mpicxx')
 
-sys.path.append(pandoraPath+'/scripts/')
+sys.path.append(pandora_path+'/scripts/')
 import generateMpi 
-
 
 generateMPICodeBuilder = Builder(action=generateMpi.execute)
 env.Append( BUILDERS = {'GenerateMPICode' : generateMPICodeBuilder})
 
 linkFlags = Split('-fopenmp')
-libs = Split('tinyxml pthread grass_gis grass_datetime RInside Rcpp R')
+libs = Split('tinyxml pthread grass_gis grass_datetime RInside Rcpp R mpl')
+
+# Compilation flags common to all options
+env.Append( CCFLAGS = ['-DPANDORAMPI', '-DTIXML_USE_STL', '-fopenmp', '-Wall', '-pedantic', '-std=c++0x' ] )
+
 if int(release) == 0:
-	env['CCFLAGS'] = Split('-g -O0 -Wall -DTIXML_USE_STL -fopenmp -DPANDORADEBUG -std=c++0x')
+	env.Append( CCFLAGS = ['-g', '-O0', '-DPANDORADEBUG'] )
 	if int(extremeDebug)==1:
-		env['CCFLAGS'] += ['-DPANDORAEDEBUG']
+		env.Append( CCFLAGS = ['-DPANDORAEDEBUG'] )
 	libs += ['pandorad']
 else:
-	env['CCFLAGS'] = Split('-O3 -DTIXML_USE_STL -fopenmp -std=c++0x')
+	env.Append( CCFLAGS = ['-O3'] )
 	libs += ['pandora']
 
-includeDirs = Split('./ '+pandoraPath+' '+RInsidePath+'/include '+RCppPath+'/include /usr/share/R/include')
+includeDirs = Split('./ '+pandora_path+' '+rinside_path+'/include '+rcpp_path+'/include /usr/share/R/include')
 
 includeDirs += ['/usr/local/include','/usr/local/hdf5/include','/usr/lib/grass64/include/','/usr/include/gdal/']
-libDirs = Split(pandoraPath + ' /usr/local/lib /usr/local/hdf5/lib/ /usr/lib/grass64/lib/ /usr/lib/R/lib/ '+RInsidePath+'/lib '+RCppPath+'/libs /usr/lib/R/site-library/Rcpp/lib/')
-libs += ['mpl']
+libDirs = Split(pandora_path + ' /usr/local/lib /usr/local/hdf5/lib/ /usr/lib/grass64/lib/ /usr/lib/R/lib/ '+rinside_path+'/lib '+rcpp_path+'/libs /usr/lib/R/site-library/Rcpp/lib/')
+
+sources = Glob('*.cxx')
 
 # add the list of mpi code that must be generated & compiled
 mpiAgentsSrc = ['mpiCode/FactoryCode.cxx']
 agentsSrc = ['main.cxx']
-for agent in agents:	
-	if agent != '':
-		agentsSrc.append(agent+".cxx")
-		mpiAgentsSrc.append("mpiCode/"+agent+"_mpi.cxx")
+for agent in agents:
+	agentsSrc.append(agent+".cxx")
+	mpiAgentsSrc.append("mpiCode/"+agent+"_mpi.cxx")
 
 env['namespaces'] = namespaceAgents
 env.GenerateMPICode( target=mpiAgentsSrc, source=agentsSrc)
 env.Depends(world+'.hxx',mpiAgentsSrc)
-env.Program(nameProgram, srcFiles+mpiAgentsSrc, CPPPATH=includeDirs, LIBS=libs, LIBPATH=libDirs, LINKFLAGS=linkFlags)
+env.Program('simulation.bin', sources+mpiAgentsSrc, CPPPATH=includeDirs, LIBS=libs, LIBPATH=libDirs, LINKFLAGS=linkFlags)
 
