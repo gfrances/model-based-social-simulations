@@ -1,0 +1,60 @@
+import os
+
+nameProgram = 'modelSim'
+
+agents = ['ModelAgent']
+world = 'Environment'
+namespaceAgents = ['Model']
+
+srcFiles = Split('main.cxx ModelAgent.cxx Environment.cxx EnvironmentConfig.cxx')
+
+pandoraPath = ARGUMENTS.get('pandora', '../../pandora/pandora')
+RCppPath = ARGUMENTS.get('rcpp','/home/xrubio/R/x86_64-pc-linux-gnu-library/3.0/Rcpp')
+RInsidePath = ARGUMENTS.get('rinside','/home/xrubio/R/x86_64-pc-linux-gnu-library/3.0/RInside')
+
+
+import os, sys
+from subprocess import call
+
+release = ARGUMENTS.get('release', 1)
+extremeDebug = ARGUMENTS.get('edebug', 0)
+
+env = Environment(ENV=os.environ, CXX='mpicxx')
+
+sys.path.append(pandoraPath+'/scripts/')
+import generateMpi 
+
+
+generateMPICodeBuilder = Builder(action=generateMpi.execute)
+env.Append( BUILDERS = {'GenerateMPICode' : generateMPICodeBuilder})
+
+linkFlags = Split('-fopenmp')
+libs = Split('tinyxml pthread grass_gis grass_datetime RInside Rcpp R')
+if int(release) == 0:
+	env['CCFLAGS'] = Split('-g -O0 -Wall -DTIXML_USE_STL -fopenmp -DPANDORADEBUG -std=c++0x')
+	if int(extremeDebug)==1:
+		env['CCFLAGS'] += ['-DPANDORAEDEBUG']
+	libs += ['pandorad']
+else:
+	env['CCFLAGS'] = Split('-O3 -DTIXML_USE_STL -fopenmp -std=c++0x')
+	libs += ['pandora']
+
+includeDirs = Split('./ '+pandoraPath+' '+RInsidePath+'/include '+RCppPath+'/include /usr/share/R/include')
+
+includeDirs += ['/usr/local/include','/usr/local/hdf5/include','/usr/lib/grass64/include/','/usr/include/gdal/']
+libDirs = Split(pandoraPath + ' /usr/local/lib /usr/local/hdf5/lib/ /usr/lib/grass64/lib/ /usr/lib/R/lib/ '+RInsidePath+'/lib '+RCppPath+'/libs /usr/lib/R/site-library/Rcpp/lib/')
+libs += ['mpl']
+
+# add the list of mpi code that must be generated & compiled
+mpiAgentsSrc = ['mpiCode/FactoryCode.cxx']
+agentsSrc = ['main.cxx']
+for agent in agents:	
+	if agent != '':
+		agentsSrc.append(agent+".cxx")
+		mpiAgentsSrc.append("mpiCode/"+agent+"_mpi.cxx")
+
+env['namespaces'] = namespaceAgents
+env.GenerateMPICode( target=mpiAgentsSrc, source=agentsSrc)
+env.Depends(world+'.hxx',mpiAgentsSrc)
+env.Program(nameProgram, srcFiles+mpiAgentsSrc, CPPPATH=includeDirs, LIBS=libs, LIBPATH=libDirs, LINKFLAGS=linkFlags)
+
