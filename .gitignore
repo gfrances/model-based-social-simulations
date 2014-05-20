@@ -1,3 +1,17 @@
+
+
+# Compiled source #
+*.sconsign.dblite
+*.swp
+*.pyc
+
+
+# Logs, debug traces, etc.
+*.log
+callgrind.out.*
+*#
+
+
 # Compiled Object files
 *.slo
 *.lo
