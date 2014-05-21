@@ -29,7 +29,7 @@ linkFlags = Split('-fopenmp')
 libs = Split('tinyxml pthread grass_gis grass_datetime RInside Rcpp R mpl')
 
 # Compilation flags common to all options
-env.Append( CCFLAGS = ['-DPANDORAMPI', '-DTIXML_USE_STL', '-fopenmp', '-Wall', '-pedantic', '-std=c++0x' ] )
+env.Append( CCFLAGS = ['-DTIXML_USE_STL', '-fopenmp', '-Wall', '-pedantic', '-std=c++0x' ] )
 
 if int(release) == 0:
 	env.Append( CCFLAGS = ['-g', '-O0', '-DPANDORADEBUG'] )
