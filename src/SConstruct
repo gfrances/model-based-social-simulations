@@ -40,10 +40,9 @@ else:
 	env.Append( CCFLAGS = ['-O3'] )
 	libs += ['pandora']
 
-includeDirs = Split('./ '+pandora_path+' '+rinside_path+'/include '+rcpp_path+'/include /usr/share/R/include')
-
-includeDirs += ['/usr/local/include','/usr/local/hdf5/include','/usr/lib/grass64/include/','/usr/include/gdal/']
-libDirs = Split(pandora_path + ' /usr/local/lib /usr/local/hdf5/lib/ /usr/lib/grass64/lib/ /usr/lib/R/lib/ '+rinside_path+'/lib '+rcpp_path+'/libs /usr/lib/R/site-library/Rcpp/lib/')
+includeDirs = ['.', '/usr/local/include', pandora_path, rinside_path + '/include', rcpp_path + '/include', '/usr/share/R/include']
+#includeDirs += ['/usr/local/hdf5/include','/usr/lib/grass64/include/','/usr/include/gdal/']
+libDirs = [pandora_path, '/usr/local/lib', '/usr/lib/R/lib/', rinside_path + '/lib', '/usr/lib/R/site-library/Rcpp/lib/', '/usr/lib/grass64/lib/']
 
 sources = Glob('*.cxx')
 
