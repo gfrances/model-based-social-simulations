@@ -14,7 +14,7 @@ rlib_path = ARGUMENTS.get('rlib', get_envvar('RLIB_PATH'))
 rcpp_path = rlib_path + '/Rcpp'
 rinside_path = rlib_path + '/RInside'
 
-release = ARGUMENTS.get('release', 0)
+release = ARGUMENTS.get('release', 1)
 extremeDebug = ARGUMENTS.get('edebug', 0)
 
 env = Environment(ENV=os.environ, CXX='mpicxx')

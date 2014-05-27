@@ -14,6 +14,8 @@ class EnvironmentConfig : public Engine::Config
     // range of the spatial autocorrelation
     int _range;
 	Engine::Size<int> _size;
+    std::string _fileName;
+    bool _loadResourcesFromFile;
 public:
 	EnvironmentConfig();
 	virtual ~EnvironmentConfig();
@@ -23,6 +25,7 @@ public:
 	const Engine::Size<int> & getSize() const;
 
 	friend class Environment;
+    bool loadResourcesFromFile() const;
 };
 
 } // namespace Model

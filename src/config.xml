@@ -2,9 +2,13 @@
 <config>  
 	<!-- Global simulation parameters -->
 	<output resultsFile="./data/model.h5" logsDir="./logs"/>
-	<numSteps value="100" serializeResolution="1"/>
-	<size width="20" height="20"/>
-    <environment range="25"/>
-	<numAgents value="10"/>
+	<numSteps value="5" serializeResolution="1"/>
+	<size width="50" height="50"/>
+    <!-- load method is file (raster already created) or "random" (generate an autocorrelated map). -->
+    <environment method="file">
+        <file fileName="../resources/maps/r25_s50x50.h5"/>
+        <random range="25"/>
+    </environment>
+	<numAgents value="1"/>
 </config>
 
