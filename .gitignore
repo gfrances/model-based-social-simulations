@@ -1,7 +1,5 @@
 
 
-src/mpiCode
-
 # Compiled source #
 *.sconsign.dblite
 *.swp

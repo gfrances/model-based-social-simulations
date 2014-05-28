@@ -5,11 +5,12 @@ agents = ['ModelAgent']
 world = 'Environment'
 namespaceAgents = ['Model']
 
+def get_envvar(varname, default=None):
+	return os.environ[varname] if varname in os.environ else default
 
-def get_envvar(varname):
-	return os.environ[varname] if varname in os.environ else ''
 
 pandora_path = ARGUMENTS.get('pandora', get_envvar('PANDORA_PATH'))
+grass64_path = get_envvar('GRASS64_PATH', '/usr/lib/grass64')
 
 release = ARGUMENTS.get('release', 1)
 extremeDebug = ARGUMENTS.get('edebug', 0)
@@ -39,7 +40,7 @@ else:
 
 includeDirs = ['.', '/usr/local/include', pandora_path]
 #includeDirs += ['/usr/local/hdf5/include','/usr/lib/grass64/include/','/usr/include/gdal/']
-libDirs = [pandora_path, '/usr/local/lib', '/usr/lib/grass64/lib/']
+libDirs = [pandora_path, '/usr/local/lib', , grass64_path + '/lib']
 
 sources = Glob('*.cxx')
 
