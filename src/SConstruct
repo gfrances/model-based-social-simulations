@@ -10,9 +10,6 @@ def get_envvar(varname):
 	return os.environ[varname] if varname in os.environ else ''
 
 pandora_path = ARGUMENTS.get('pandora', get_envvar('PANDORA_PATH'))
-rlib_path = ARGUMENTS.get('rlib', get_envvar('RLIB_PATH'))
-rcpp_path = rlib_path + '/Rcpp'
-rinside_path = rlib_path + '/RInside'
 
 release = ARGUMENTS.get('release', 1)
 extremeDebug = ARGUMENTS.get('edebug', 0)
@@ -26,7 +23,7 @@ generateMPICodeBuilder = Builder(action=generateMpi.execute)
 env.Append( BUILDERS = {'GenerateMPICode' : generateMPICodeBuilder})
 
 linkFlags = Split('-fopenmp')
-libs = Split('tinyxml pthread grass_gis grass_datetime RInside Rcpp R mpl')
+libs = Split('tinyxml pthread grass_gis grass_datetime mpl')
 
 # Compilation flags common to all options
 env.Append( CCFLAGS = ['-DTIXML_USE_STL', '-fopenmp', '-Wall', '-pedantic', '-std=c++0x' ] )
@@ -40,9 +37,9 @@ else:
 	env.Append( CCFLAGS = ['-O3'] )
 	libs += ['pandora']
 
-includeDirs = ['.', '/usr/local/include', pandora_path, rinside_path + '/include', rcpp_path + '/include', '/usr/share/R/include']
+includeDirs = ['.', '/usr/local/include', pandora_path]
 #includeDirs += ['/usr/local/hdf5/include','/usr/lib/grass64/include/','/usr/include/gdal/']
-libDirs = [pandora_path, '/usr/local/lib', '/usr/lib/R/lib/', rinside_path + '/lib', '/usr/lib/R/site-library/Rcpp/lib/', '/usr/lib/grass64/lib/']
+libDirs = [pandora_path, '/usr/local/lib', '/usr/lib/grass64/lib/']
 
 sources = Glob('*.cxx')
 

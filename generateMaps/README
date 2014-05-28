@@ -1,0 +1,3 @@
+R code to generate autocorrelated maps to be used with the model
+The code requires the installation of the packages gstat, sp, rgdal and raster
+
