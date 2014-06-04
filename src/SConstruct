@@ -48,11 +48,11 @@ sources = Glob('*.cxx')
 mpiAgentsSrc = ['mpiCode/FactoryCode.cxx']
 agentsSrc = ['main.cxx']
 for agent in agents:
-	agentsSrc.append(agent+".cxx")
-	mpiAgentsSrc.append("mpiCode/"+agent+"_mpi.cxx")
+	agentsSrc.append(agent + ".cxx")
+	mpiAgentsSrc.append("mpiCode/" + agent + "_mpi.cxx")
 
 env['namespaces'] = namespaceAgents
 env.GenerateMPICode( target=mpiAgentsSrc, source=agentsSrc)
 env.Depends(world+'.hxx',mpiAgentsSrc)
-env.Program('simulation.bin', sources+mpiAgentsSrc, CPPPATH=includeDirs, LIBS=libs, LIBPATH=libDirs, LINKFLAGS=linkFlags)
+env.Program('simulation.bin', sources + mpiAgentsSrc, CPPPATH=includeDirs, LIBS=libs, LIBPATH=libDirs, LINKFLAGS=linkFlags)
 

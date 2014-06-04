@@ -3,6 +3,7 @@
 
 #include <EnvironmentConfig.hxx>
 #include <ModelAgent.hxx>
+#include <AgentFactory.hxx>
 #include <Simulation.hxx>
 #include <DynamicRaster.hxx>
 #include <Point2D.hxx>
@@ -30,13 +31,11 @@ void Environment::createRasters()
 
 void Environment::createAgents()
 {
-	for(int i=0; i<_config._numAgents; i++)
+	auto agentFactory = AgentFactory(_config.getControllerConfig());
+	for(unsigned i = 0; i < _config._numAgents; i++)
 	{
-		if((i%getNumTasks())==getId())
-		{
-			std::ostringstream oss;
-			oss << "ModelAgent_" << i;
-			ModelAgent * agent = new ModelAgent(oss.str());
+		if((i % getNumTasks()) == (unsigned) getId()) {
+			ModelAgent* agent = agentFactory.createAgent(i);
 			addAgent(agent);
 			agent->setRandomPosition();
 		}

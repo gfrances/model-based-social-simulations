@@ -5,6 +5,14 @@
 	<numSteps value="5" serializeResolution="1"/>
 	<size width="50" height="50"/>
     <environment fileName="../maps/r25_s50x50.tif"/>
-	<agents initPop="1"/>
+    <agents initPop="1">
+		
+		<controller
+			type="MDP"
+			horizon="3"
+			width="150"
+			explorationBonus="10"
+		/>
+	</agents>
 </config>
 

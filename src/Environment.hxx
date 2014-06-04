@@ -19,7 +19,7 @@ class Environment : public Engine::World
 	void createRasters();
 	void createAgents();
 
-	const EnvironmentConfig & _config;
+	const EnvironmentConfig& _config;
 public:
 	Environment(const EnvironmentConfig & config, Engine::Simulation & simulation, Engine::Scheduler * scheduler = 0);
 	virtual ~Environment();

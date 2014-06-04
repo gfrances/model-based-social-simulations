@@ -1,5 +1,5 @@
 
-#include <ModelAgent.hxx>
+#include "ModelAgent.hxx"
 #include <Statistics.hxx>
 #include <World.hxx>
 #include <GeneralState.hxx>
@@ -7,9 +7,11 @@
 namespace Model
 {
 
-ModelAgent::ModelAgent( const std::string & id ) : Agent(id), _resources(5)
+ModelAgent::ModelAgent(unsigned id, std::shared_ptr<AgentController> controller)
+	: Agent("ModelAgent_" + id), _controller(controller), _resources(INITIAL_RESOURCES)
 {
 }
+
 
 ModelAgent::~ModelAgent()
 {
@@ -17,6 +19,14 @@ ModelAgent::~ModelAgent()
 
 void ModelAgent::selectActions()
 {
+}
+
+/**
+ * 
+ */
+Engine::Action* ModelAgent::getLastSelectedAction() {
+	assert(_actions.size() == 1 && _actions.front()); // Only one action selected, and not null.
+	return _actions.front();
 }
 
 void ModelAgent::updateState()
