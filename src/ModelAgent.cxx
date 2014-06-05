@@ -9,13 +9,9 @@ namespace Model
 
 ModelAgent::ModelAgent(unsigned id, std::shared_ptr<AgentController> controller)
 	: Agent("ModelAgent_" + id), _controller(controller), _resources(INITIAL_RESOURCES)
-{
-}
+{}
 
-
-ModelAgent::~ModelAgent()
-{
-}
+ModelAgent::~ModelAgent() {}
 
 void ModelAgent::selectActions()
 {
@@ -24,17 +20,8 @@ void ModelAgent::selectActions()
 	_actions.push_back(_controller->selectAction(*this));
 }
 
-/**
- * 
- */
-Engine::Action* ModelAgent::getLastSelectedAction() {
-	assert(_actions.size() == 1 && _actions.front()); // Only one action selected, and not null.
-	return _actions.front();
-}
-
 void ModelAgent::updateState()
 {
-    move();
     collect();
     consume();
     checkStarvation();
@@ -46,16 +33,6 @@ void ModelAgent::collect()
     getWorld()->setValue("resources", getPosition(), 0);
 }
 
-void ModelAgent::move()
-{
-    Engine::Point2D<int> newPosition = getPosition();
-    newPosition._x += Engine::GeneralState::statistics().getUniformDistValue(-1,1);
-    newPosition._y += Engine::GeneralState::statistics().getUniformDistValue(-1,1);
-    if(getWorld()->checkPosition(newPosition))
-    {
-       setPosition(newPosition);
-    }
-}
 
 void ModelAgent::consume()
 {

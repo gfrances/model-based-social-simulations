@@ -2,6 +2,7 @@
 #define __MDP_CONTROLLER_HXX__
 
 #include "AgentController.hxx"
+#include <MoveAction.hxx>
 
 namespace Model
 {
@@ -19,7 +20,8 @@ public:
 	
 	virtual Engine::Action* selectAction(const ModelAgent& agent) const {
 		// TODO
-		return (Engine::Action*) 0;
+		assert(false);
+		return MoveAction::createRandomAction(agent);
 	}
 };
 

@@ -2,13 +2,16 @@
 <config>  
 	<!-- Global simulation parameters -->
 	<output resultsFile="./data/model.h5" logsDir="./logs"/>
-	<numSteps value="5" serializeResolution="1"/>
+	<numSteps value="50" serializeResolution="1"/>
 	<size width="50" height="50"/>
     <environment fileName="../maps/r25_s50x50.tif"/>
     <agents initPop="1">
 		
+		<!-- We currently accept the following controller types:
+				MDP, random, motionless, lazy, greedy, rule
+		-->
 		<controller
-			type="motionless"
+			type="random" 
 			horizon="3"
 			width="150"
 			explorationBonus="10"

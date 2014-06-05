@@ -9,16 +9,17 @@ namespace Model
 {
 
 /**
- * A controller that always chooses one of the nine possible move actions uniformly at random.
+ * A controller that always chooses one of the nine move actions
+ * that are valid for the given agent uniformly at random.
  */
 class RandomController : public AgentController
 {
 public:
-	MotionlessController() {}
-	virtual ~MotionlessController() {}
+	RandomController() {}
+	virtual ~RandomController() {}
 	
 	virtual Engine::Action* selectAction(const ModelAgent& agent) const {
-		return MoveAction::createRandomAction();
+		return MoveAction::createRandomAction(agent);
 	}
 };
 

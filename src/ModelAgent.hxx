@@ -16,7 +16,6 @@ private:
 	const AgentController::cptr _controller;
 	int _resources; // MpiBasicAttribute
 
-    void move();
     void collect();
     void consume();
     void checkStarvation();

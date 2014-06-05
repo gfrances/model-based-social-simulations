@@ -10,6 +10,7 @@
 #include "controllers/MotionlessController.hxx"
 #include "controllers/GreedyController.hxx"
 #include "controllers/RuleBasedController.hxx"
+#include "controllers/RandomController.hxx"
 #include <memory>
 
 namespace Model 
@@ -35,7 +36,7 @@ public:
 		if (_config.controllerType == AgentControllerType::MDP) {
 			return std::make_shared<MDPController>();
 		} else if (_config.controllerType == AgentControllerType::random) {
-			return std::make_shared<LazyController>();
+			return std::make_shared<RandomController>();
 		} else if (_config.controllerType == AgentControllerType::motionless) {
 			return std::make_shared<MotionlessController>();
 		} else if (_config.controllerType == AgentControllerType::lazy) {

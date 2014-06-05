@@ -20,7 +20,7 @@ public:
 	virtual Engine::Action* selectAction(const ModelAgent& agent) const {
 		//TODO - IMPLEMENT
 		assert(false);
-		return MoveAction::createRandomAction();
+		return MoveAction::createRandomAction(agent);
 	}
 };
 
