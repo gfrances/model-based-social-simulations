@@ -10,6 +10,10 @@ namespace Model
 
 class ModelAgent;
 
+/**
+ * An agent controller is in charge of selecting an action for a given agent following some particular
+ * criteria to be defined in the subclasses.
+ */
 class AgentController
 {
 public:
@@ -19,7 +23,7 @@ public:
 	virtual ~AgentController() {};
 	
 	//! Select the action to be performed by the agent according to the particular logic of the controller.
-	virtual Engine::Action* selectAction(const ModelAgent& agent) = 0;
+	virtual Engine::Action* selectAction(const ModelAgent& agent) const = 0;
 };
 
 }

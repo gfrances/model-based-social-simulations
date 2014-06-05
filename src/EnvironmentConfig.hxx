@@ -8,7 +8,7 @@
 namespace Model
 {
 
-enum class AgentControllerType { random, MDP, lazy, maximizer, ruleBased };
+enum class AgentControllerType { random, motionless, MDP, lazy, greedy, rule };
 
 class ControllerConfig {
 public:

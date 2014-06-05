@@ -3,7 +3,7 @@
 #define __ModelAgent_hxx__
 
 #include <Agent.hxx>
-#include <AgentController.hxx>
+#include <controllers/AgentController.hxx>
 #include <string>
 #include <memory>
 

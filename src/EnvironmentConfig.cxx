@@ -46,8 +46,14 @@ void EnvironmentConfig::retrieveControllerConfig(TiXmlElement* controller) {
 		controllerConfig.controllerType = AgentControllerType::MDP;
 	} else if (data == "random") {
 		controllerConfig.controllerType = AgentControllerType::random;
+	} else if (data == "motionless") {
+		controllerConfig.controllerType = AgentControllerType::motionless;
 	} else if (data == "lazy") {
 		controllerConfig.controllerType = AgentControllerType::lazy;
+	} else if (data == "greedy") {
+		controllerConfig.controllerType = AgentControllerType::greedy;
+	} else if (data == "rule") {
+		controllerConfig.controllerType = AgentControllerType::rule;
 	} else {
 		throw Engine::Exception("Unknown agent controller type '" + data + "'");
 	}

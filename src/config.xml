@@ -8,7 +8,7 @@
     <agents initPop="1">
 		
 		<controller
-			type="MDP"
+			type="motionless"
 			horizon="3"
 			width="150"
 			explorationBonus="10"

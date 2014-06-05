@@ -19,6 +19,9 @@ ModelAgent::~ModelAgent()
 
 void ModelAgent::selectActions()
 {
+	assert(_actions.size()==0);
+// 	_actions.clear();
+	_actions.push_back(_controller->selectAction(*this));
 }
 
 /**
