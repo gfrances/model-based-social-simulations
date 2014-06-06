@@ -17,6 +17,7 @@ callgrind.out.*
 *.lo
 *.o
 *.obj
+*.os
 
 # Compiled Dynamic libraries
 *.so
