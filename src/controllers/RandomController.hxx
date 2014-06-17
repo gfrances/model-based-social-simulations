@@ -3,7 +3,7 @@
 
 #include <Logger.hxx>
 #include "AgentController.hxx"
-#include "MoveAction.hxx"
+#include <MoveAction.hxx>
 
 namespace Model
 {

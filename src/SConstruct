@@ -54,5 +54,9 @@ for agent in agents:
 env['namespaces'] = namespaceAgents
 env.GenerateMPICode( target=mpiAgentsSrc, source=agentsSrc)
 env.Depends(world+'.hxx',mpiAgentsSrc)
+
 env.Program('simulation.bin', sources + mpiAgentsSrc, CPPPATH=includeDirs, LIBS=libs, LIBPATH=libDirs, LINKFLAGS=linkFlags)
+
+# Build a static library to be used from the test suite, etc.
+env.StaticLibrary("modelX", sources + mpiAgentsSrc, CPPPATH=includeDirs, LIBS=libs, LIBPATH=libDirs, LINKFLAGS=linkFlags)
 

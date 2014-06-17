@@ -72,10 +72,10 @@ public:
 	}
 	
 	//! Returns one of the nine possible move actions chosen uniformly at random.
-// 	static MoveAction* createRandomAction() {
-// 		int idx = Engine::GeneralState::statistics().getUniformDistValue(0, directions.size());
-// 		return new MoveAction(idx);
-// 	}
+	static MoveAction* createRandomAction() {
+		int idx = Engine::GeneralState::statistics().getUniformDistValue(0, directions.size());
+		return new MoveAction(idx);
+ 	}
 	
 	//! Returns one of the actions that are valid for the given agent, chosen uniformly at random.
 	static MoveAction* createRandomAction(const Engine::Agent& agent) {
