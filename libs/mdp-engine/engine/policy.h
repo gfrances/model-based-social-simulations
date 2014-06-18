@@ -240,7 +240,7 @@ template<typename T> class random_optimistic_greedy_t : public base_greedy_t<T> 
     virtual ~random_optimistic_greedy_t() { }
 };
 
-}; // namespace Policy
+} // namespace Policy
 
 
 // Online evaluation
@@ -324,9 +324,9 @@ inline std::pair<float, float>
     return std::make_pair(avg, stdev);
 }
 
-}; // namespace Evaluation
+} // namespace Evaluation
 
-}; // namespace Online
+} // namespace Online
 
 #undef DEBUG
 

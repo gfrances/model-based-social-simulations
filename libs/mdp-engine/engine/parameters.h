@@ -61,7 +61,7 @@ struct parameters_t {
     parameters_t() : epsilon_(0), seed_(0) { }
 };
 
-}; // end of namespace Algorithm
+} // end of namespace Algorithm
 
 
 namespace Online {
@@ -84,9 +84,9 @@ struct parameters_t {
     }
 };
 
-}; // namespace Evaluation
+} // namespace Evaluation
 
-}; // namespace Online
+} // namespace Online
 
 #endif
 

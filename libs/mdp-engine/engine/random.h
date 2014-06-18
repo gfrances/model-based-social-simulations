@@ -64,7 +64,7 @@ inline unsigned uniform(unsigned min, unsigned max) {
     return min + uniform(max - min);
 }
 
-};
+}
 
 #undef DEBUG
 

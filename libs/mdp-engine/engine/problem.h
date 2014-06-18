@@ -249,7 +249,7 @@ inline float min_hash_t<T>::QValue(const T &s, action_t a) const {
     return qv == std::numeric_limits<float>::max() ? std::numeric_limits<float>::max() : hash_t<T>::problem_.cost(s, a) + qv;
 }
 
-}; // namespace Problem
+} // namespace Problem
 
 template<typename T>
 inline std::ostream& operator<<(std::ostream &os, const Problem::problem_t<T> &problem) {

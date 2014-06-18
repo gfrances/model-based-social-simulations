@@ -35,7 +35,7 @@
 namespace Algorithm {
   template<typename T> size_t
   value_iteration(const Problem::problem_t<T>&, const T &s, Problem::hash_t<T>&, const parameters_t&);
-};
+}
 
 namespace Heuristic {
 
@@ -140,7 +140,7 @@ template<typename T> struct wrapper_t : public Hash::hash_map_t<T>::eval_functio
     }
 };
 
-}; // namespace Heuristic
+} // namespace Heuristic
 
 #undef DEBUG
 

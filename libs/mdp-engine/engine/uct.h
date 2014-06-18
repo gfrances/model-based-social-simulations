@@ -275,7 +275,7 @@ template<typename T> class uct_t : public improvement_t<T> {
     }
 };
 
-}; // namespace UCT
+} // namespace UCT
 
 template<typename T>
 inline const policy_t<T>* make_uct(const policy_t<T> &base_policy,
@@ -286,9 +286,9 @@ inline const policy_t<T>* make_uct(const policy_t<T> &base_policy,
     return new UCT::uct_t<T>(base_policy, width, horizon, parameter, random_ties);
 }
 
-}; // namespace Policy
+} // namespace Policy
 
-}; // namespace Online
+} // namespace Online
 
 #undef DEBUG
 

@@ -43,7 +43,7 @@ namespace Problem {
     const action_t noop = -1;
 #endif
 
-};
+}
 
 namespace Hash {
 
@@ -120,7 +120,7 @@ class data_t {
     }
 };
 
-}; // namespace Hash
+} // namespace Hash
 
 
 inline std::ostream& operator<<(std::ostream &os, const Hash::data_t &data) {
@@ -304,7 +304,7 @@ class hash_map_t : public generic_hash_map_t<T, Hash::data_t*, F> {
 
 };
 
-}; // namespace Hash
+} // namespace Hash
 
 #undef DEBUG
 
