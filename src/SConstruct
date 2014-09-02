@@ -12,8 +12,9 @@ def get_envvar(varname, default=None):
 pandora_path = ARGUMENTS.get('pandora', get_envvar('PANDORA_PATH'))
 grass64_path = get_envvar('GRASS64_PATH', '/usr/lib/grass64')
 
-release = ARGUMENTS.get('release', 1)
+release = True if int(ARGUMENTS.get('release', 1)) == 1 else False
 extremeDebug = ARGUMENTS.get('edebug', 0)
+executable_name = "simulation{}.bin".format('' if release else '.debug')
 
 env = Environment(ENV=os.environ, CXX='mpicxx')
 
@@ -29,20 +30,20 @@ libs = Split('tinyxml pthread grass_gis grass_datetime mpl')
 # Compilation flags common to all options
 env.Append( CCFLAGS = ['-DTIXML_USE_STL', '-fopenmp', '-Wall', '-pedantic', '-std=c++0x' ] )
 
-if int(release) == 0:
+if release:
+	env.Append( CCFLAGS = ['-O3'] )
+	libs += ['pandora']
+else:
 	env.Append( CCFLAGS = ['-g', '-O0', '-DPANDORADEBUG'] )
 	if int(extremeDebug)==1:
 		env.Append( CCFLAGS = ['-DPANDORAEDEBUG'] )
-	libs += ['pandorad']
-else:
-	env.Append( CCFLAGS = ['-O3'] )
-	libs += ['pandora']
+	libs += ['pandorad']	
 
-includeDirs = ['.', '/usr/local/include', pandora_path]
+includeDirs = ['.', '../libs/mdp-engine', '/usr/local/include', pandora_path]
 #includeDirs += ['/usr/local/hdf5/include','/usr/lib/grass64/include/','/usr/include/gdal/']
 libDirs = [pandora_path, '/usr/local/lib', grass64_path + '/lib']
 
-sources = Glob('*.cxx')
+sources = Glob('*.cxx') + Glob('controllers/*.cxx') + Glob('controllers/mdp/*.cxx')
 
 # add the list of mpi code that must be generated & compiled
 mpiAgentsSrc = ['mpiCode/FactoryCode.cxx']
@@ -55,7 +56,7 @@ env['namespaces'] = namespaceAgents
 env.GenerateMPICode( target=mpiAgentsSrc, source=agentsSrc)
 env.Depends(world+'.hxx',mpiAgentsSrc)
 
-env.Program('simulation.bin', sources + mpiAgentsSrc, CPPPATH=includeDirs, LIBS=libs, LIBPATH=libDirs, LINKFLAGS=linkFlags)
+env.Program(executable_name, sources + mpiAgentsSrc, CPPPATH=includeDirs, LIBS=libs, LIBPATH=libDirs, LINKFLAGS=linkFlags)
 
 # Build a static library to be used from the test suite, etc.
 env.StaticLibrary("modelX", sources + mpiAgentsSrc, CPPPATH=includeDirs, LIBS=libs, LIBPATH=libDirs, LINKFLAGS=linkFlags)
