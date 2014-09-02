@@ -1,6 +1,8 @@
 #ifndef __MOVE_ACTION_HXX__
 #define __MOVE_ACTION_HXX__
 
+#include <memory>
+
 #include <Action.hxx>
 #include <Logger.hxx>
 #include <Agent.hxx>
@@ -18,6 +20,8 @@ namespace Model
 class MoveAction : public Engine::Action
 {
 public:
+	typedef std::shared_ptr<const MoveAction> cptr;
+	
 	//! Index of one of the possible directions in the `directions` vector.
 	typedef unsigned DirectionIdx;
 	
@@ -35,41 +39,72 @@ protected:
 	DirectionIdx _direction;
 	
 public:
-	MoveAction(DirectionIdx direction) : _direction(direction) {}
+	MoveAction(DirectionIdx direction) : _direction(direction) {
+		assert(_direction < directions.size());
+	}
 	virtual ~MoveAction() {}
+	
+	//! Copy constructor
+	MoveAction(const MoveAction& other) :
+	_direction(other._direction) {
+		assert(_direction < directions.size());
+	}
 
 	virtual void execute(Engine::Agent& agent) {
 		log_DEBUG("actions", "Executing move action: " + describe());
-		auto destination = agent.getPosition() + directions[_direction];
-		assert(isValid(agent));
-		agent.setPosition(destination);
+		assert(isValidFor(agent));
+		agent.setPosition(getResultingPosition(agent.getPosition()));
 	}
 	
+	//! Return the new position that results from applying the current action to the given `position`
+	inline Engine::Point2D<int> getResultingPosition(const Engine::Point2D<int>& position) const {
+		return position + directions[_direction];
+	}
+	
+	//! Return a string describing the current action unambigously.
 	virtual std::string describe() const {
 		return names[_direction];
 	}
 	
 	//! Return true iff the current action is valid for the given agent.
-	bool isValid(const Engine::Agent& agent) {
+	bool isValidFor(const Engine::Agent& agent) {
 		return _direction == DIRECTION_STAY  // The no-move direction is always valid.
-		       || agent.getWorld()->checkPosition(agent.getPosition() + directions[_direction]);
+		       || agent.getWorld()->checkPosition(getResultingPosition(agent.getPosition()));
 	}
+
+	//! Compute a vector with all the applicable actions in the given world and for the given position.
+	static std::vector<MoveAction::cptr> computeApplicableActions(const Engine::Agent& agent) {
+		return computeApplicableActions(*agent.getWorld(), agent.getPosition());
+	}
+	
+	//! Compute a vector with all the applicable actions in the given world and for the given position.
+	static std::vector<MoveAction::cptr> computeApplicableActions(const Engine::World& world, const Engine::Point2D<int>& position) {
+		std::vector<MoveAction::cptr> actions;
+		for (unsigned idx:computeValidDirectionIndexes(world, position)) {
+			actions.push_back(std::make_shared<MoveAction>(idx));
+		}
+		return actions;
+	}	
 	
 	//! Compute a vector with the indexes of all those directions which are valid 
 	//! for the given agent to take. Will contain at least one direction, the "no-move" direction.
 	static std::vector<DirectionIdx> computeValidDirectionIndexes(const Engine::Agent& agent) {
-		auto world = agent.getWorld();
-		const auto& current = agent.getPosition();
-		
-		// We skip the first element, which is the "no-move" direction and is thus always valid
+		return computeValidDirectionIndexes(*agent.getWorld(), agent.getPosition());
+	}
+	
+	
+	//! Compute a vector with the indexes of all those directions which are valid in the given world
+	//! and for the given position. Will contain at least one direction, the "no-move" direction.
+	static std::vector<DirectionIdx> computeValidDirectionIndexes(const Engine::World& world, const Engine::Point2D<int>& position) {
+		// We skip the first element (also in the iteration), which is the "no-move" direction and is thus always valid
 		std::vector<DirectionIdx> validIndexes = {0};
 		for (unsigned i = 1; i < directions.size(); ++i) {
-			if (world->checkPosition(current + directions[i])) {
+			if (world.checkPosition(position + directions[i])) {
 				validIndexes.push_back(i);
 			}
 		}
 		return validIndexes;
-	}
+	}	
 	
 	//! Returns one of the nine possible move actions chosen uniformly at random.
 	static MoveAction* createRandomAction() {

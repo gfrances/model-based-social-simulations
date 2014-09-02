@@ -11,7 +11,7 @@
 				MDP, random, motionless, lazy, greedy, rule
 		-->
 		<controller
-			type="random" 
+			type="MDP" 
 			horizon="3"
 			width="150"
 			explorationBonus="10"

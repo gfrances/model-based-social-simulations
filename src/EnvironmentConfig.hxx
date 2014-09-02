@@ -12,10 +12,16 @@ enum class AgentControllerType { random, motionless, MDP, lazy, greedy, rule };
 
 class ControllerConfig {
 public:
-		AgentControllerType controllerType;
-		unsigned width;
-		unsigned horizon;
-		float explorationBonus;
+	AgentControllerType controllerType;
+	unsigned width;
+	unsigned horizon;
+	float explorationBonus;
+
+	AgentControllerType getControllerType() const { return controllerType; }
+	void setControllerType(const AgentControllerType& type) { controllerType = type; }
+	unsigned getWidth() const { return width; }
+	unsigned getHorizon() const { return horizon; }
+	unsigned getExplorationBonus() const { return explorationBonus; }
 };
 
 

@@ -43,17 +43,17 @@ void EnvironmentConfig::retrieveControllerConfig(TiXmlElement* controller) {
 	std::string data;
     retrieveAttributeMandatory(controller, "type", data);
 	if (data == "MDP") {
-		controllerConfig.controllerType = AgentControllerType::MDP;
+		controllerConfig.setControllerType(AgentControllerType::MDP);
 	} else if (data == "random") {
-		controllerConfig.controllerType = AgentControllerType::random;
+		controllerConfig.setControllerType(AgentControllerType::random);
 	} else if (data == "motionless") {
-		controllerConfig.controllerType = AgentControllerType::motionless;
+		controllerConfig.setControllerType(AgentControllerType::motionless);
 	} else if (data == "lazy") {
-		controllerConfig.controllerType = AgentControllerType::lazy;
+		controllerConfig.setControllerType(AgentControllerType::lazy);
 	} else if (data == "greedy") {
-		controllerConfig.controllerType = AgentControllerType::greedy;
+		controllerConfig.setControllerType(AgentControllerType::greedy);
 	} else if (data == "rule") {
-		controllerConfig.controllerType = AgentControllerType::rule;
+		controllerConfig.setControllerType(AgentControllerType::rule);
 	} else {
 		throw Engine::Exception("Unknown agent controller type '" + data + "'");
 	}

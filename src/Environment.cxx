@@ -12,25 +12,22 @@
 
 namespace Model 
 {
+	
+Environment::Environment(const EnvironmentConfig & config, Engine::Simulation & simulation, Engine::Scheduler * scheduler ) :
+	World(simulation, scheduler, true), // We explicitly allow multiple agents per cell
+	_config(config)
+{}
 
-Environment::Environment(const EnvironmentConfig & config, Engine::Simulation & simulation, Engine::Scheduler * scheduler ) : World(simulation, scheduler, false), _config(config)
-{
-}
+Environment::~Environment() {}
 
-Environment::~Environment()
-{
-}
-
-void Environment::createRasters()
-{
-    registerDynamicRaster("resources", true);
-    Engine::DynamicRaster & raster = getDynamicRaster("resources");
+void Environment::createRasters() {
+    registerDynamicRaster("resources", true, RESOURCE_RASTER_IDX);
+    Engine::DynamicRaster & raster = getDynamicRaster(RESOURCE_RASTER_IDX);
     Engine::GeneralState::rasterLoader().fillGDALRaster(raster, _config._fileName, getBoundaries());
-	updateRasterToMaxValues("resources");
+	updateRasterToMaxValues(RESOURCE_RASTER_IDX);
 }
 
-void Environment::createAgents()
-{
+void Environment::createAgents() {
 	auto agentFactory = AgentFactory(_config.getControllerConfig());
 	for(unsigned i = 0; i < _config._numAgents; i++)
 	{
@@ -40,6 +37,14 @@ void Environment::createAgents()
 			agent->setRandomPosition();
 		}
 	}
+}
+
+ModelAgent* Environment::createAgent(const std::string id, const Engine::Point2D<int>& position) {
+	auto agentFactory = AgentFactory(_config.getControllerConfig());
+	ModelAgent* agent = agentFactory.createAgent(id);
+	addAgent(agent);
+	agent->setPosition(position);
+	return agent;
 }
 
 } // namespace Model
