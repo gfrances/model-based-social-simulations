@@ -23,6 +23,8 @@ public:
 		assert(false);
 		return MoveAction::createRandomAction(agent);
 	}
+	
+	virtual std::string getType() const { return "Greedy"; }
 };
 
 }

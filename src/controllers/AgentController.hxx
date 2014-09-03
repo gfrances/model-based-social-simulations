@@ -22,6 +22,8 @@ public:
 	AgentController() {}
 	virtual ~AgentController() {};
 	
+	virtual std::string getType() const = 0;
+	
 	//! Select the action to be performed by the agent according to the particular logic of the controller.
 	virtual Engine::Action* selectAction(const ModelAgent& agent) const = 0;
 };

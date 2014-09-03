@@ -1,15 +1,18 @@
 
 #include <EnvironmentConfig.hxx>
 #include <Exception.hxx>
-
-
+#include <iostream>
+#include <tinyxml.h>
+#include <algorithm>
 
 namespace Model
 {
+	
+const std::vector<std::string> EnvironmentConfig::ALLOWED_CONTROLLERS = {"MDP", "random", "motionless", "lazy", "greedy", "rule"};
 
 EnvironmentConfig::EnvironmentConfig(const std::string& filename) : 
 	Engine::Config(filename),
-	_numAgents(0),  _size(0, 0), map(""), _logdir("")
+	_size(0, 0), map(""), _logdir(""), _controllers(0)
 {}
 
 EnvironmentConfig::~EnvironmentConfig()
@@ -26,41 +29,31 @@ void EnvironmentConfig::loadParams() {
 	// The map raster file
 	map = getParamStr("environment", "map");
 	
-	// The number of agents
-	_numAgents = getParamUnsigned("agents", "initPop");
-	
 	// Load the configuration corresponding to the agent controllers
 	loadControllerParams();
 }
 	
-const Engine::Size<int> & EnvironmentConfig::getSize() const { return _size; }
-
-void EnvironmentConfig::loadControllerParams() {
+void EnvironmentConfig::loadSingleControllerConfig(TiXmlElement* element) {
+	ControllerConfig config;
+	config.type = getParamStrFromElem(element, "type");
+	config.population = getParamUnsignedFromElem(element, "population");
 	
-	std::string data;
-	
-	// The controller type
-	data = getParamStr("agents/controller", "type");
-	
-	if (data == "MDP") {
-		controllerConfig.setControllerType(AgentControllerType::MDP);
-	} else if (data == "random") {
-		controllerConfig.setControllerType(AgentControllerType::random);
-	} else if (data == "motionless") {
-		controllerConfig.setControllerType(AgentControllerType::motionless);
-	} else if (data == "lazy") {
-		controllerConfig.setControllerType(AgentControllerType::lazy);
-	} else if (data == "greedy") {
-		controllerConfig.setControllerType(AgentControllerType::greedy);
-	} else if (data == "rule") {
-		controllerConfig.setControllerType(AgentControllerType::rule);
-	} else {
-		throw Engine::Exception("Unknown agent controller type '" + data + "'");
+	if (std::find(ALLOWED_CONTROLLERS.begin(), ALLOWED_CONTROLLERS.end(), config.type) == ALLOWED_CONTROLLERS.end()) {
+		throw Engine::Exception("Unknown agent controller type '" + config.type + "'");
 	}
 	
-	controllerConfig.horizon = getParamUnsigned("agents/controller", "horizon");
-	controllerConfig.width = getParamUnsigned("agents/controller", "width");
-	controllerConfig.explorationBonus = getParamUnsigned("agents/controller", "explorationBonus");
+ 	if (config.type == "MDP") {
+		config.horizon = getParamUnsignedFromElem(element, "horizon");
+		config.width = getParamUnsignedFromElem(element, "width");
+		config.explorationBonus = getParamUnsignedFromElem(element, "explorationBonus");		
+ 	}
+ 	_controllers.push_back(config);
+}
+
+void EnvironmentConfig::loadControllerParams() {
+	for(TiXmlElement* controller_element = findElement("agents/controller"); controller_element; controller_element = controller_element->NextSiblingElement()) {
+		loadSingleControllerConfig(controller_element);
+	}
 }
 
 } // namespace Model

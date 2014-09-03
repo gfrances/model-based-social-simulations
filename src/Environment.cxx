@@ -1,19 +1,19 @@
 
 #include <Environment.hxx>
-
 #include <EnvironmentConfig.hxx>
 #include <ModelAgent.hxx>
-#include <AgentFactory.hxx>
 #include <DynamicRaster.hxx>
 #include <Point2D.hxx>
 #include <GeneralState.hxx>
 #include <RasterLoader.hxx>
+#include <utils/logging.hxx>
 
 namespace Model 
 {
 
 Environment::Environment(EnvironmentConfig* config, Engine::Scheduler* scheduler) :
-	World(config, scheduler, true) // We explicitly allow multiple agents per cell
+	World(config, scheduler, true), // We explicitly allow multiple agents per cell
+	agentFactory()
 {}
 
 Environment::~Environment() {}
@@ -21,32 +21,49 @@ Environment::~Environment() {}
 void Environment::createRasters() {
     registerDynamicRaster("resources", true, RESOURCE_RASTER_IDX);
     Engine::DynamicRaster & raster = getDynamicRaster(RESOURCE_RASTER_IDX);
-    Engine::GeneralState::rasterLoader().fillGDALRaster(raster, getModelConfig().map, getBoundaries());
+    Engine::GeneralState::rasterLoader().fillGDALRaster(raster, getModelConfig().getMap(), getBoundaries());
 	updateRasterToMaxValues(RESOURCE_RASTER_IDX);
 }
 
 void Environment::createAgents() {
-	auto agentFactory = AgentFactory(getModelConfig().getControllerConfig());
-	for(unsigned i = 0; i < getModelConfig()._numAgents; i++)
-	{
-		if((i % getNumTasks()) == (unsigned) getId()) {
-			ModelAgent* agent = agentFactory.createAgent(i);
-			addAgent(agent);
-			agent->setRandomPosition();
+	unsigned id = 1;
+	for (const ControllerConfig& config:getModelConfig().getControllerConfigurations()) {
+		agentFactory.registerControllerType(config);
+		
+		for(unsigned i = 0; i < config.getPopulation(); i++)
+		{
+			if((id % getNumTasks()) == (unsigned) getId()) {
+				ModelAgent* agent = agentFactory.createAgent(id, config.getType());
+				addAgent(agent);
+				agent->setRandomPosition();
+			}
+			++id;
 		}
 	}
 }
 
-ModelAgent* Environment::createAgent(const std::string id, const Engine::Point2D<int>& position) {
-	auto agentFactory = AgentFactory(getModelConfig().getControllerConfig());
-	ModelAgent* agent = agentFactory.createAgent(id);
-	addAgent(agent);
-	agent->setPosition(position);
-	return agent;
+void Environment::addAgent(ModelAgent* agent) {
+	Engine::World::addAgent(agent);
+	PDEBUG("population", "[Timestep: " << getCurrentTimeStep() << "] Agent created: " << *agent);
 }
 
-const EnvironmentConfig& Environment::getModelConfig() const { return static_cast<const EnvironmentConfig&>(getConfig()); }
+void Environment::step() {
+	Engine::World::step();
 
+	
+	// Ugly, but efficient
+	#ifdef PANDORADEBUG 
+	PDEBUG("agents", "");
+	PDEBUG("agents", "*****************************************");
+	PDEBUG("agents", "Agent overview at end of timestep " << getCurrentTimeStep());
+	for (auto agent:_agents) {
+		PDEBUG("agents", *agent);
+	}
+	#endif	
+}
+
+
+const EnvironmentConfig& Environment::getModelConfig() const { return static_cast<const EnvironmentConfig&>(getConfig()); }
 
 } // namespace Model
 

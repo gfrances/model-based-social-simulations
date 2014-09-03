@@ -20,6 +20,8 @@ public:
 	virtual Engine::Action* selectAction(const ModelAgent& agent) const {
 		return new MoveAction(MoveAction::DIRECTION_STAY);
 	}
+	
+	virtual std::string getType() const { return "Motionless"; }
 };
 
 }

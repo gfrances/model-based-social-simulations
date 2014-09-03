@@ -9,11 +9,11 @@
 namespace Model
 {
 
-ModelAgent::ModelAgent(unsigned id, std::shared_ptr<AgentController> controller)
+ModelAgent::ModelAgent(unsigned id, const AgentController::cptr controller)
 	: ModelAgent("ModelAgent_" + std::to_string(id), controller)
 {}
 
-ModelAgent::ModelAgent(const std::string& id, std::shared_ptr<AgentController> controller)
+ModelAgent::ModelAgent(const std::string& id, const AgentController::cptr controller)
 	: Agent(id), _controller(controller), _resources(INITIAL_RESOURCES), _numChildren(0)
 {}
 
@@ -46,15 +46,21 @@ void ModelAgent::updateState() {
 	}
 }
 
+//! Create an additional agent with a subordinated ID
 void ModelAgent::reproduceAgent() {
-	// Create an additional agent with a subordinated ID
+	
 	++_numChildren;
 	std::string id = getId() + "." + std::to_string(_numChildren);
-	static_cast<Environment *>(getWorld())->createAgent(id, getPosition());
+	
+	PDEBUG("population", *this << " gives birth to agent " << id);
+	
+	ModelAgent* child = new ModelAgent(id, getController()); // We reuse the same controller
+	child->setPosition(getPosition()); // The new agent starts at the same position
+	
+	static_cast<Environment *>(getWorld())->addAgent(child); // Add the agent to the world
 	
 	// And reduce the number of resources of the current agent
 	_resources = consumeResourcesOnReproduction(_resources);
-	PDEBUG("population", getId() << " gives birth to agent " << id);
 }
 
 
@@ -92,6 +98,9 @@ Engine::DynamicRaster& ModelAgent::getResourceRaster() {
 
 std::ostream& ModelAgent::print(std::ostream& os) const {
 	os << getId();
+	
+	os << " [" << getController()->getType() << "]";
+	
 	if (!exists()) os << " [DEAD!]";
 	if (!getWorld()) os << " [DETACHED!]";
 	

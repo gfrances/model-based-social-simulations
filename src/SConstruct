@@ -35,16 +35,17 @@ env.Append(LINKFLAGS = '-fopenmp')
 env.Append(CCFLAGS = ['-DTIXML_USE_STL', '-Wall', '-pedantic', '-std=c++0x' ])
 env.Append(CPPPATH = ['.', '../libs/mdp-engine', pandora_path + '/include'])
 env.Append(LIBPATH = [pandora_path + '/lib', grass64_path + '/lib'])
+env.Append(LIBS = ['tinyxml'])
 
 # Environment-dependen flags:
 if env['debug']:
     env.Append( CCFLAGS = ['-g', '-O0', '-DPANDORADEBUG'] )
     if env['edebug']:
         env.Append(CCFLAGS = '-DPANDORAEDEBUG')
-    env.Append(LIBS = 'pandorad')
+    env.Append(LIBS = ['pandorad'])
 else:
     env.Append( CCFLAGS = ['-O3'] )
-    env.Append(LIBS = 'pandora')
+    env.Append(LIBS = ['pandora'])
 
 
 # add the list of mpi code that must be generated & compiled

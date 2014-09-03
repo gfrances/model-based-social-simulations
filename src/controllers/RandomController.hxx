@@ -21,6 +21,8 @@ public:
 	virtual Engine::Action* selectAction(const ModelAgent& agent) const {
 		return MoveAction::createRandomAction(agent);
 	}
+	
+	virtual std::string getType() const { return "Random"; }
 };
 
 }

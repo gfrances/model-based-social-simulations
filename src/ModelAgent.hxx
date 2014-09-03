@@ -31,8 +31,8 @@ public:
 	static const int INITIAL_RESOURCES = 5;
 	static const int REPRODUCTION_THRESHOLD = 50;
 	
-	ModelAgent(unsigned id, std::shared_ptr<AgentController> controller);
-	ModelAgent(const std::string& id, std::shared_ptr<AgentController> controller);
+	ModelAgent(unsigned id, const AgentController::cptr controller);
+	ModelAgent(const std::string& id, const AgentController::cptr controller);
 	
 	virtual ~ModelAgent();
 
@@ -65,6 +65,9 @@ public:
 	//! Accessors for the resources attribute
 	void setResources( int resources ) {_resources = resources; }
 	int getResources() const { return _resources; }
+	
+	//! Accessor for the controller
+	const AgentController::cptr getController() const { return _controller; }
 	
 	//! Prints a representation of the state to the given stream. Redefined from the parent class.
 	virtual std::ostream& print(std::ostream& os) const;

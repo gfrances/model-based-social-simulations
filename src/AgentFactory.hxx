@@ -2,51 +2,43 @@
 #ifndef __AGENT_FACTORY_HXX__
 #define __AGENT_FACTORY_HXX__
 
-#include <EnvironmentConfig.hxx>
-#include <ModelAgent.hxx>
+
+#include <map>
 #include <controllers/AgentController.hxx>
-#include <controllers/MDPController.hxx>
-#include <controllers/LazyController.hxx>
-#include "controllers/MotionlessController.hxx"
-#include "controllers/GreedyController.hxx"
-#include "controllers/RuleBasedController.hxx"
-#include "controllers/RandomController.hxx"
-#include <memory>
 
 namespace Model 
 {
 
+class ModelAgent; class ControllerConfig;
+
 class AgentFactory
 {
-private:
-	const ControllerConfig& _config;
+
+protected:
+	//! Maps controller names (which act as IDs) to controller objects.
+	//! We use one controller object for all the agents of that type.
+	std::map<std::string, AgentController::cptr> controllers;
+	
 	
 public:
-	AgentFactory(const ControllerConfig& config) 
-	: _config(config) {}
-	
+	AgentFactory();
 	~AgentFactory() {}
 	
-	//! Simply create a controller of the type specified in the configuration and inject it to the agent.
-	ModelAgent* createAgent(unsigned id) { return new ModelAgent(id, createControllerFromConfig()); }
-	ModelAgent* createAgent(const std::string id) { return new ModelAgent(id, createControllerFromConfig()); }
+	void registerControllerType(const ControllerConfig& config);
 	
-	std::shared_ptr<AgentController> createControllerFromConfig() const {
-		if (_config.getControllerType() == AgentControllerType::MDP) {
-			return std::make_shared<MDPController>(_config);
-		} else if (_config.getControllerType() == AgentControllerType::random) {
-			return std::make_shared<RandomController>();
-		} else if (_config.getControllerType() == AgentControllerType::motionless) {
-			return std::make_shared<MotionlessController>();
-		} else if (_config.getControllerType() == AgentControllerType::lazy) {
-			return std::make_shared<LazyController>();
-		} else if (_config.getControllerType() == AgentControllerType::greedy) {
-			return std::make_shared<GreedyController>();
-		} else if (_config.getControllerType() == AgentControllerType::rule) {
-			return std::make_shared<RuleBasedController>();
-		}
-		assert(false); // Should never get here
-	}
+	
+	//! Simply create a controller of the type specified in the configuration and inject it to the agent.
+	ModelAgent* createAgent(unsigned id, const std::string& type) const;
+	ModelAgent* createAgent(const std::string id, const std::string& type) const;
+	
+	
+protected:
+	
+	//! Creates a controller of the given type with the given config.
+	void createController(const ControllerConfig& config);
+	
+	//! Retrieve from the controller pool or create a controller of the given type.
+	AgentController::cptr getController(const std::string& type) const;
 };
 
 } // namespace Model 
