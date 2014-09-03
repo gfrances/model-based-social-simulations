@@ -30,19 +30,20 @@ class EnvironmentConfig : public Engine::Config
 private:
 	unsigned _numAgents;
 	Engine::Size<int> _size;
-    std::string _fileName;
+    std::string map;
 	std::string _logdir;
 	
 	ControllerConfig controllerConfig;
 	
-	void retrieveControllerConfig(TiXmlElement* controller);
+	//! Loads the particular configuration parameters of the agent controllers
+	void loadControllerParams();
 	
 public:
 	friend class Environment;
-	EnvironmentConfig();
+	EnvironmentConfig(const std::string& filename);
 	virtual ~EnvironmentConfig();
 
-	void extractParticularAttribs(TiXmlElement *pRoot);
+	void loadParams();
 	const Engine::Size<int> & getSize() const;
 	
 	const std::string& getLogDir() { return _logdir; }

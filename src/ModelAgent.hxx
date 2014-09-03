@@ -62,11 +62,18 @@ public:
 	//! Currently an agent reproduces at the end of a time step if her amount of resource reaches a certain reproduction threshold.
 	static bool checkReproduction(int resources) { return resources >= REPRODUCTION_THRESHOLD; }
 	
-	void registerAttributes();
-	void serialize();
-
+	//! Accessors for the resources attribute
 	void setResources( int resources ) {_resources = resources; }
 	int getResources() const { return _resources; }
+	
+	//! Prints a representation of the state to the given stream. Redefined from the parent class.
+	virtual std::ostream& print(std::ostream& os) const;
+	
+	//! Helper to return the agent's world's resource raster.
+	const Engine::DynamicRaster& getResourceRaster() const;
+	
+	void registerAttributes();
+	void serialize();
 
 	////////////////////////////////////////////////
 	// This code has been automatically generated //
@@ -79,10 +86,6 @@ public:
 	////////////////////////////////////////////////
 	//////// End of generated code /////////////////
 	////////////////////////////////////////////////
-	
-	
-	//! Helper to return the agent's world's resource raster.
-	const Engine::DynamicRaster& getResourceRaster() const;
 };
 
 } // namespace Model

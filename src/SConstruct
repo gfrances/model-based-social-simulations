@@ -5,45 +5,47 @@ agents = ['ModelAgent']
 world = 'Environment'
 namespaceAgents = ['Model']
 
-def get_envvar(varname, default=None):
-	return os.environ[varname] if varname in os.environ else default
+
+pandora_path = os.getenv('PANDORAPATH', '/usr/local/pandora')
+grass64_path = os.getenv('GRASS64_PATH', '/usr/lib/grass64')
+
+vars = Variables('custom.py')
+vars.Add(BoolVariable('debug', 'compile with debug flags', 'no'))
+vars.Add(BoolVariable('edebug', 'compile with extreme debug logs', 'no'))
 
 
-pandora_path = ARGUMENTS.get('pandora', get_envvar('PANDORA_PATH'))
-grass64_path = get_envvar('GRASS64_PATH', '/usr/lib/grass64')
+env = Environment(variables=vars, ENV=os.environ, CXX='mpicxx')
+Help(vars.GenerateHelpText(env))
 
-release = True if int(ARGUMENTS.get('release', 1)) == 1 else False
-extremeDebug = ARGUMENTS.get('edebug', 0)
-executable_name = "simulation{}.bin".format('' if release else '.debug')
+# All the model source files
+sources = Glob('*.cxx') + Glob('utils/*.cxx')  + Glob('controllers/*.cxx') + Glob('controllers/mdp/*.cxx')
 
-env = Environment(ENV=os.environ, CXX='mpicxx')
-
-sys.path.append(pandora_path+'/scripts/')
-import generateMpi 
-
+sys.path.append(pandora_path + '/bin')
+import generateMpi
 generateMPICodeBuilder = Builder(action=generateMpi.execute)
 env.Append( BUILDERS = {'GenerateMPICode' : generateMPICodeBuilder})
 
-linkFlags = Split('-fopenmp')
-libs = Split('tinyxml pthread grass_gis grass_datetime mpl')
+release = True if int(ARGUMENTS.get('release', 1)) == 1 else False
+extremeDebug = ARGUMENTS.get('edebug', 0)
+executable_name = "simulation{}.bin".format('.debug' if env['debug'] else '')
 
-# Compilation flags common to all options
-env.Append( CCFLAGS = ['-DTIXML_USE_STL', '-fopenmp', '-Wall', '-pedantic', '-std=c++0x' ] )
+ 
+# Flags common to all environments:
+env.Append(LINKFLAGS = '-fopenmp')
+env.Append(CCFLAGS = ['-DTIXML_USE_STL', '-Wall', '-pedantic', '-std=c++0x' ])
+env.Append(CPPPATH = ['.', '../libs/mdp-engine', pandora_path + '/include'])
+env.Append(LIBPATH = [pandora_path + '/lib', grass64_path + '/lib'])
 
-if release:
-	env.Append( CCFLAGS = ['-O3'] )
-	libs += ['pandora']
+# Environment-dependen flags:
+if env['debug']:
+    env.Append( CCFLAGS = ['-g', '-O0', '-DPANDORADEBUG'] )
+    if env['edebug']:
+        env.Append(CCFLAGS = '-DPANDORAEDEBUG')
+    env.Append(LIBS = 'pandorad')
 else:
-	env.Append( CCFLAGS = ['-g', '-O0', '-DPANDORADEBUG'] )
-	if int(extremeDebug)==1:
-		env.Append( CCFLAGS = ['-DPANDORAEDEBUG'] )
-	libs += ['pandorad']	
+    env.Append( CCFLAGS = ['-O3'] )
+    env.Append(LIBS = 'pandora')
 
-includeDirs = ['.', '../libs/mdp-engine', '/usr/local/include', pandora_path]
-#includeDirs += ['/usr/local/hdf5/include','/usr/lib/grass64/include/','/usr/include/gdal/']
-libDirs = [pandora_path, '/usr/local/lib', grass64_path + '/lib']
-
-sources = Glob('*.cxx') + Glob('utils/*.cxx')  + Glob('controllers/*.cxx') + Glob('controllers/mdp/*.cxx')
 
 # add the list of mpi code that must be generated & compiled
 mpiAgentsSrc = ['mpiCode/FactoryCode.cxx']
@@ -54,10 +56,10 @@ for agent in agents:
 
 env['namespaces'] = namespaceAgents
 env.GenerateMPICode( target=mpiAgentsSrc, source=agentsSrc)
-env.Depends(world+'.hxx',mpiAgentsSrc)
+env.Depends('world' + '.hxx', mpiAgentsSrc)
 
-env.Program(executable_name, sources + mpiAgentsSrc, CPPPATH=includeDirs, LIBS=libs, LIBPATH=libDirs, LINKFLAGS=linkFlags)
+env.Program(executable_name, sources + mpiAgentsSrc)
 
 # Build a static library to be used from the test suite, etc.
-env.StaticLibrary("modelX", sources + mpiAgentsSrc, CPPPATH=includeDirs, LIBS=libs, LIBPATH=libDirs, LINKFLAGS=linkFlags)
+#env.StaticLibrary("modelX", sources + mpiAgentsSrc)
 

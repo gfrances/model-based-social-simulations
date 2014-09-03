@@ -4,7 +4,6 @@
 #include <EnvironmentConfig.hxx>
 #include <ModelAgent.hxx>
 #include <AgentFactory.hxx>
-#include <Simulation.hxx>
 #include <DynamicRaster.hxx>
 #include <Point2D.hxx>
 #include <GeneralState.hxx>
@@ -12,10 +11,9 @@
 
 namespace Model 
 {
-	
-Environment::Environment(const EnvironmentConfig & config, Engine::Simulation & simulation, Engine::Scheduler * scheduler ) :
-	World(simulation, scheduler, true), // We explicitly allow multiple agents per cell
-	_config(config)
+
+Environment::Environment(EnvironmentConfig* config, Engine::Scheduler* scheduler) :
+	World(config, scheduler, true) // We explicitly allow multiple agents per cell
 {}
 
 Environment::~Environment() {}
@@ -23,13 +21,13 @@ Environment::~Environment() {}
 void Environment::createRasters() {
     registerDynamicRaster("resources", true, RESOURCE_RASTER_IDX);
     Engine::DynamicRaster & raster = getDynamicRaster(RESOURCE_RASTER_IDX);
-    Engine::GeneralState::rasterLoader().fillGDALRaster(raster, _config._fileName, getBoundaries());
+    Engine::GeneralState::rasterLoader().fillGDALRaster(raster, getModelConfig().map, getBoundaries());
 	updateRasterToMaxValues(RESOURCE_RASTER_IDX);
 }
 
 void Environment::createAgents() {
-	auto agentFactory = AgentFactory(_config.getControllerConfig());
-	for(unsigned i = 0; i < _config._numAgents; i++)
+	auto agentFactory = AgentFactory(getModelConfig().getControllerConfig());
+	for(unsigned i = 0; i < getModelConfig()._numAgents; i++)
 	{
 		if((i % getNumTasks()) == (unsigned) getId()) {
 			ModelAgent* agent = agentFactory.createAgent(i);
@@ -40,12 +38,15 @@ void Environment::createAgents() {
 }
 
 ModelAgent* Environment::createAgent(const std::string id, const Engine::Point2D<int>& position) {
-	auto agentFactory = AgentFactory(_config.getControllerConfig());
+	auto agentFactory = AgentFactory(getModelConfig().getControllerConfig());
 	ModelAgent* agent = agentFactory.createAgent(id);
 	addAgent(agent);
 	agent->setPosition(position);
 	return agent;
 }
+
+const EnvironmentConfig& Environment::getModelConfig() const { return static_cast<const EnvironmentConfig&>(getConfig()); }
+
 
 } // namespace Model
 

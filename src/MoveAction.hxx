@@ -4,7 +4,7 @@
 #include <memory>
 
 #include <Action.hxx>
-#include <Logger.hxx>
+#include <utils/logging.hxx>
 #include <Agent.hxx>
 
 namespace Model
@@ -50,8 +50,10 @@ public:
 		assert(_direction < directions.size());
 	}
 
+	//! The execution of the action simply changes the location of the agent
+	//! (possibily to the same cell, if it is a no-move action
 	virtual void execute(Engine::Agent& agent) {
-		log_DEBUG("actions", "Executing move action: " + describe());
+		PDEBUG("actions", agent << " - " << describe());
 		assert(isValidFor(agent));
 		agent.setPosition(getResultingPosition(agent.getPosition()));
 	}

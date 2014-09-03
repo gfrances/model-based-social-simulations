@@ -4,7 +4,7 @@
 #include <World.hxx>
 #include <GeneralState.hxx>
 #include <Environment.hxx>
-#include <Logger.hxx>
+#include <utils/logging.hxx>
 
 namespace Model
 {
@@ -54,7 +54,7 @@ void ModelAgent::reproduceAgent() {
 	
 	// And reduce the number of resources of the current agent
 	_resources = consumeResourcesOnReproduction(_resources);
-	log_DEBUG("population", "Agent " << getId() << " split giving birth to agent " << id);
+	PDEBUG("population", getId() << " gives birth to agent " << id);
 }
 
 
@@ -88,6 +88,16 @@ const Engine::DynamicRaster& ModelAgent::getResourceRaster() const {
 }
 Engine::DynamicRaster& ModelAgent::getResourceRaster() {
 	return getWorld()->getDynamicRaster(Environment::RESOURCE_RASTER_IDX);
+}
+
+std::ostream& ModelAgent::print(std::ostream& os) const {
+	os << getId();
+	if (!exists()) os << " [DEAD!]";
+	if (!getWorld()) os << " [DETACHED!]";
+	
+	os << " [@" << "(" << _position._x << "," << _position._y << ")" << "]";
+	os << " [res: " << getResources() << "]";
+	return os;
 }
 
 } // namespace Model

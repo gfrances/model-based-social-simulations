@@ -2,7 +2,6 @@
 #include <Environment.hxx>
 #include <EnvironmentConfig.hxx>
 #include <Exception.hxx>
-#include <Simulation.hxx>
 #include <utils/logging.hxx>
 #include <mpi.h>
 #include <omp.h>
@@ -17,21 +16,19 @@ int main(int argc, char *argv[])
 		if(argc>2) throw Engine::Exception("USAGE: ./simulation.bin [config file]");
 	
 		std::string configFile(argc != 1 ? argv[1] : "config.xml");
+
+		// Load the configuration file
+        Model::EnvironmentConfig* config = new Model::EnvironmentConfig(configFile);
+		config->loadFile();
 		
-        Model::EnvironmentConfig config;
-		config.deserialize(configFile);
+		// Initialize our logger.
+		Model::Logger::init(start_time, config->getLogDir());
 		
-		omp_set_num_threads(2);
-		
-		// Initialize our logger
-		Model::Logger::init(start_time, config.getLogDir());
-		
-	
-		Engine::Simulation simParams(config.getSize(), config.getNumSteps(), config.getSerializeResolution());
-        Model::Environment environment( config, simParams, environment.useOpenMPSingleNode(config.getResultsFile()));
-	
-		environment.initialize(argc, argv);
-		environment.run();
+		// omp_set_num_threads(2);
+		// Initialize the simulation world.
+        Model::Environment world(config, Model::Environment::useOpenMPSingleNode());
+		world.initialize(argc, argv);
+		world.run();
 	}
 	catch( std::exception& e ){
 		std::cout << "exception thrown: " << e.what() << std::endl;

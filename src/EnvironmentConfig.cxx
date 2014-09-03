@@ -1,50 +1,47 @@
 
 #include <EnvironmentConfig.hxx>
 #include <Exception.hxx>
-#include <boost/lexical_cast.hpp>
+
 
 
 namespace Model
 {
 
-EnvironmentConfig::EnvironmentConfig() : _numAgents(0), _size(0, 0), _fileName("none"), _logdir("")
-{
-}
+EnvironmentConfig::EnvironmentConfig(const std::string& filename) : 
+	Engine::Config(filename),
+	_numAgents(0),  _size(0, 0), map(""), _logdir("")
+{}
 
 EnvironmentConfig::~EnvironmentConfig()
-{
-}
+{}
 
-void EnvironmentConfig::extractParticularAttribs(TiXmlElement * root)
-{
+void EnvironmentConfig::loadParams() {
 	// We retrieve the log dir again... no better way of doing it without modifying the base classes.
-	retrieveAttributeMandatory( root->FirstChildElement("output"), "logsDir", _logdir); 
-	
-	TiXmlElement * element = root->FirstChildElement("size");
-	retrieveAttributeMandatory( element, "width", _size._width);
-	retrieveAttributeMandatory( element, "height", _size._height);
+	_logdir = getParamStr("output", "logsDir");
 
-    element = root->FirstChildElement("environment");
-    retrieveAttributeMandatory(element, "fileName", _fileName);
-    
+	// The map size
+	_size._width = getParamInt("size", "width");
+	_size._height = getParamInt("size", "height");
+	
+	// The map raster file
+	map = getParamStr("environment", "map");
+	
+	// The number of agents
+	_numAgents = getParamUnsigned("agents", "initPop");
+	
+	// Load the configuration corresponding to the agent controllers
+	loadControllerParams();
+}
+	
+const Engine::Size<int> & EnvironmentConfig::getSize() const { return _size; }
+
+void EnvironmentConfig::loadControllerParams() {
+	
 	std::string data;
-    element = root->FirstChildElement("agents");
-    retrieveAttributeMandatory(element, "initPop", data);
-	_numAgents = boost::lexical_cast<unsigned>(data);
-	
-	retrieveControllerConfig(element->FirstChildElement("controller"));
-}
-	
-const Engine::Size<int> & EnvironmentConfig::getSize() const
-{
-	return _size;
-}
-
-void EnvironmentConfig::retrieveControllerConfig(TiXmlElement* controller) {
 	
 	// The controller type
-	std::string data;
-    retrieveAttributeMandatory(controller, "type", data);
+	data = getParamStr("agents/controller", "type");
+	
 	if (data == "MDP") {
 		controllerConfig.setControllerType(AgentControllerType::MDP);
 	} else if (data == "random") {
@@ -61,14 +58,9 @@ void EnvironmentConfig::retrieveControllerConfig(TiXmlElement* controller) {
 		throw Engine::Exception("Unknown agent controller type '" + data + "'");
 	}
 	
-	retrieveAttributeMandatory(controller, "horizon", data);
-	controllerConfig.horizon = boost::lexical_cast<unsigned>(data);
-	
-	retrieveAttributeMandatory(controller, "width", data);
-	controllerConfig.width = boost::lexical_cast<unsigned>(data);
-	
-	retrieveAttributeMandatory(controller, "explorationBonus", data);
-	controllerConfig.explorationBonus = boost::lexical_cast<float>(data);
+	controllerConfig.horizon = getParamUnsigned("agents/controller", "horizon");
+	controllerConfig.width = getParamUnsigned("agents/controller", "width");
+	controllerConfig.explorationBonus = getParamUnsigned("agents/controller", "explorationBonus");
 }
 
 } // namespace Model
