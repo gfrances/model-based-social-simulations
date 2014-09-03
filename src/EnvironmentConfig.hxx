@@ -31,6 +31,7 @@ private:
 	unsigned _numAgents;
 	Engine::Size<int> _size;
     std::string _fileName;
+	std::string _logdir;
 	
 	ControllerConfig controllerConfig;
 	
@@ -44,6 +45,7 @@ public:
 	void extractParticularAttribs(TiXmlElement *pRoot);
 	const Engine::Size<int> & getSize() const;
 	
+	const std::string& getLogDir() { return _logdir; }
 	const ControllerConfig& getControllerConfig() const { return controllerConfig; }
 };
 

@@ -43,7 +43,7 @@ includeDirs = ['.', '../libs/mdp-engine', '/usr/local/include', pandora_path]
 #includeDirs += ['/usr/local/hdf5/include','/usr/lib/grass64/include/','/usr/include/gdal/']
 libDirs = [pandora_path, '/usr/local/lib', grass64_path + '/lib']
 
-sources = Glob('*.cxx') + Glob('controllers/*.cxx') + Glob('controllers/mdp/*.cxx')
+sources = Glob('*.cxx') + Glob('utils/*.cxx')  + Glob('controllers/*.cxx') + Glob('controllers/mdp/*.cxx')
 
 # add the list of mpi code that must be generated & compiled
 mpiAgentsSrc = ['mpiCode/FactoryCode.cxx']

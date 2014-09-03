@@ -7,7 +7,7 @@
 namespace Model
 {
 
-EnvironmentConfig::EnvironmentConfig() : _numAgents(0), _size(0, 0), _fileName("none")
+EnvironmentConfig::EnvironmentConfig() : _numAgents(0), _size(0, 0), _fileName("none"), _logdir("")
 {
 }
 
@@ -17,6 +17,9 @@ EnvironmentConfig::~EnvironmentConfig()
 
 void EnvironmentConfig::extractParticularAttribs(TiXmlElement * root)
 {
+	// We retrieve the log dir again... no better way of doing it without modifying the base classes.
+	retrieveAttributeMandatory( root->FirstChildElement("output"), "logsDir", _logdir); 
+	
 	TiXmlElement * element = root->FirstChildElement("size");
 	retrieveAttributeMandatory( element, "width", _size._width);
 	retrieveAttributeMandatory( element, "height", _size._height);

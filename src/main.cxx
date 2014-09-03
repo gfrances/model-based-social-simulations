@@ -3,26 +3,29 @@
 #include <EnvironmentConfig.hxx>
 #include <Exception.hxx>
 #include <Simulation.hxx>
-
+#include <utils/logging.hxx>
+#include <mpi.h>
+#include <omp.h>
 #include <iostream>
 #include <cstdlib>
 
 int main(int argc, char *argv[])
 {
-	try
-	{	
-		if(argc>2)
-		{
-			throw Engine::Exception("USAGE: modelSim [config file]");
-		}		
+	double start_time = MPI_Wtime();
 	
-		std::string fileName("config.xml");
-		if(argc!=1)
-		{
-			fileName = argv[1];
-		}
+	try {
+		if(argc>2) throw Engine::Exception("USAGE: ./simulation.bin [config file]");
+	
+		std::string configFile(argc != 1 ? argv[1] : "config.xml");
+		
         Model::EnvironmentConfig config;
-		config.deserialize(fileName);
+		config.deserialize(configFile);
+		
+		omp_set_num_threads(2);
+		
+		// Initialize our logger
+		Model::Logger::init(start_time, config.getLogDir());
+		
 	
 		Engine::Simulation simParams(config.getSize(), config.getNumSteps(), config.getSerializeResolution());
         Model::Environment environment( config, simParams, environment.useOpenMPSingleNode(config.getResultsFile()));
@@ -30,9 +33,8 @@ int main(int argc, char *argv[])
 		environment.initialize(argc, argv);
 		environment.run();
 	}
-	catch( std::exception & exceptionThrown )
-	{
-		std::cout << "exception thrown: " << exceptionThrown.what() << std::endl;
+	catch( std::exception& e ){
+		std::cout << "exception thrown: " << e.what() << std::endl;
 	}
 	return 0;
 }
