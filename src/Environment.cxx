@@ -20,7 +20,7 @@ Environment::~Environment() {}
 
 void Environment::createRasters() {
     registerDynamicRaster("resources", true, RESOURCE_RASTER_IDX);
-    Engine::DynamicRaster & raster = getDynamicRaster(RESOURCE_RASTER_IDX);
+    Engine::DynamicRaster& raster = getDynamicRaster(RESOURCE_RASTER_IDX);
     Engine::GeneralState::rasterLoader().fillGDALRaster(raster, getModelConfig().getMap(), getBoundaries());
 	updateRasterToMaxValues(RESOURCE_RASTER_IDX);
 }
@@ -48,22 +48,38 @@ void Environment::addAgent(ModelAgent* agent) {
 }
 
 void Environment::step() {
-	Engine::World::step();
-
-	
 	// Ugly, but efficient
-	#ifdef PANDORADEBUG 
-	PDEBUG("agents", "");
-	PDEBUG("agents", "*****************************************");
-	PDEBUG("agents", "Agent overview at end of timestep " << getCurrentTimeStep());
-	for (auto agent:_agents) {
-		PDEBUG("agents", *agent);
-	}
-	#endif	
+	#ifdef PANDORADEBUG
+	logAgentsState();
+	logMapState();
+	#endif
+	Engine::World::step();
 }
 
 
 const EnvironmentConfig& Environment::getModelConfig() const { return static_cast<const EnvironmentConfig&>(getConfig()); }
+
+void Environment::logAgentsState() const {
+	PDEBUG("agents", "");
+	PDEBUG("agents", "*****************************************");
+	PDEBUG("agents", "Agent overview at the beginning of timestep " << getCurrentTimeStep());
+	for (auto agent:_agents) {
+		PDEBUG("agents", *agent);
+	}
+	PDEBUG("map", "");
+}
+
+void Environment::logMapState() const {
+	const Engine::DynamicRaster& raster = getDynamicRaster(RESOURCE_RASTER_IDX);
+	PDEBUG("map", "");
+	PDEBUG("map", "*****************************************");
+	PDEBUG("map", "Map resources at the beginning of timestep " << getCurrentTimeStep());
+	for (auto point:getBoundaries()) {
+		PDEBUG("map", "(" << point._x << "," << point._y << "): " << raster.getValue(point) << "/" << raster.getMaxValue(point));
+	}
+	PDEBUG("map", "");
+	
+}
 
 } // namespace Model
 

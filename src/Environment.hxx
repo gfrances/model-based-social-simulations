@@ -39,6 +39,10 @@ public:
 	
 	//! Overload the parent class method to add custom logging
 	void step();
+	
+	void logAgentsState() const;
+	void logMapState() const;	
+	
 };
 
 } // namespace Model 

@@ -51,6 +51,7 @@ void MDPProblem::next(const MDPState& s, action_t a, OutcomeVector& outcomes) co
 	auto validActions = MoveAction::computeApplicableActions(getWorld(), position);
 	
 	// 3. The new resource raster, affected by the agent's consumption
+	// TODO - This is a performance bottleneck, should be optimized by using some derived type of raster.
 	Engine::DynamicRaster resourceRaster(s.getResourceRaster()); // copy the map of resources from the previous state
 	
 	// 4. The new amount of resources held by the agent is obtained by applying the logic of resource consumption on
