@@ -40,6 +40,10 @@ public:
 	//! Overload the parent class method to add custom logging
 	void step();
 	
+	//! Returns the units of resource that naturally grow in a map cell during `num_steps` timesteps.
+	//! Currently it is one unit per timestep.
+	static unsigned naturalGrowth(unsigned num_steps) { return num_steps; }
+	
 	void logAgentsState() const;
 	void logMapState() const;	
 	

@@ -39,6 +39,17 @@ protected:
 		Engine::HashKey hashKey;
 		hashKey.add(_agentPosition._x);
 		hashKey.add(_agentPosition._y);
+		hashKey.add(_agentResources);
+		
+		// Hash the resource raster - TODO - Use a _discretized_, and possibly with limited information, resource map.
+		const auto& size = _resourceRaster.getSize();
+		for(unsigned i = 0; i < size._width; ++i)
+		{
+			for(unsigned j = 0; j < size._height; ++j) {
+				hashKey.add(_resourceRaster.get(i,j));
+			}
+		}
+		
 		return hashKey.code();
 	}
 	
