@@ -49,7 +49,7 @@ void MDPProblem::next(const MDPState& s, action_t a, OutcomeVector& outcomes) co
 	
 	// 2. The precomputed list of valid actions
 	auto validActions = MoveAction::computeApplicableActions(getWorld(), position);
-	
+
 	// 3. The new resource raster, that will be affected by the agent's consumption and by the natural growth of resources
 	MDPRaster resourceRaster(s.getResourceRaster()); // copy the map of resources from the previous state
 	
@@ -61,7 +61,7 @@ void MDPProblem::next(const MDPState& s, action_t a, OutcomeVector& outcomes) co
 	// 5. Only after subtracting the agent's consumption, we apply the natural growth to the raster.
 	resourceRaster.addAll(Environment::naturalGrowth(1));
 	
-	// 5. Check for the reproduction of the agent - Note that we do not actually reproduce the agent,
+	// 6. Check for the reproduction of the agent - Note that we do not actually reproduce the agent,
 	// only reduce the amount of resources, but this does not affect the cost, as we do not want to 
 	// induce the agent not to reproduce.
     if (ModelAgent::checkReproduction(resources)) {
