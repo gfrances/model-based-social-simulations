@@ -9,14 +9,27 @@
 #include <Size.hxx>
 #include <Environment.hxx>
 #include <Exception.hxx>
+#include <Point2D.hxx>
 
 namespace Model
 {
 
 /**
+ * An MDPRaster is a derived type of raster that stores a (limited) number of modifications to individual
+ * cells of a "base" raster. The main aim is to reduce the performance impact of the multiple copies
+ * of raster objects that need to be done during the MDP process.
+ * To that end, we only store a smart pointer to the original rasters, and individual modifications are stored
+ * in a map mapping positions to the overall modification.
+ * Global modifications can also occur, their effect being accumulated in a `delta` attribute.
  * 
+ * The real value of any given cell of the raster is at any time either explicitly stored in the 
+ * map of modifications, or, if the map is not defined on that cell, implicitly stored in the base
+ * raster plus the global modifications, and always taking into account that the real value cannot
+ * go beyond the maximum specified by the base raster. This means that when a cell is individually modified,
+ * the global delta modifier does no longer apply to it.
  * 
- * Note that an MDPRaster DOES NOT subclass any of the raster classes, for performance reasons.
+ * Note that an MDPRaster DOES NOT subclass any of the raster classes, for performance reasons, i.e. to avoid
+ * inheriting their attributes.
  */
 class MDPRaster
 {
@@ -29,7 +42,7 @@ protected:
 	//! The container must be an ordered map for the hash function to work as expected.
 	std::map<Engine::Point2D<int>, int> modified;
 	
-	//! 
+	//! A global modifier affecting all raster cells that have not been individually modified.
 	int delta;
 
 public:
@@ -51,6 +64,17 @@ public:
 
 	virtual ~MDPRaster() {}
 	
+	//! Return the raster valye for the given cell
+	int at(const Engine::Point2D<int> & pos) const {
+		const auto it = modified.find(pos);
+		
+		if (it == modified.end()) { // The value is unaffected
+			return computeUnaffectedCellValue(pos);
+		} else { // The true value is on the map of modifications
+			return it->second;
+		}
+	}
+	
 	//! Consume a given value to the given position.
 	void add(const Engine::Point2D<int> & pos, int value ) {
 		int max = getMax(pos);
@@ -66,49 +90,14 @@ public:
 		}
 	}
 	
-	
-	//! Adds a value to an already modified element.
-	int computeValue(int current, int value, int max) {
-		int future = current + value;
-		// Keep the invariant: current needs to hold the delta between the base value and the values accumulated
-		// with time, but always up to a given maximum
-		if (future < 0) throw Engine::Exception("Cannot add " + std::to_string(value) + " to an MDPRaster cell containing only " + std::to_string(current) + " units.");
-		else if (future <= max) return future;
-		else /* future > max */ return  max;
-	}
-	
-	//!
+	//! Add a value to all raster cells.
 	void addAll(int value) {
 		delta += value;
-		for (auto& change:modified) {
+		for (auto& change:modified) { // The individually modified cells need to be updated separately.
 			change.second = computeValue(change.second, value, getMax(change.first));
 		}
 	}
 	
-	//! 
-	int computeUnaffectedCellValue(const Engine::Point2D<int>& pos) const {
-		return std::min(getMax(pos), baseRaster->getValue(pos) + delta);
-	}
-	
-	
-	//! 
-	int at(const Engine::Point2D<int> & pos) const {
-		const auto it = modified.find(pos);
-		
-		if (it == modified.end()) { // The value is unaffected
-			return computeUnaffectedCellValue(pos);
-		} else { // The true value is on the map of modifications
-			return it->second;
-		}
-	}
-	
-	
-	//!
-	int at(int x, int y) const { return at(Engine::Point2D<int>(x,y)); }
-	
-	inline int getMax(const Engine::Point2D<int>& pos) const { return baseRaster->getMaxValue(pos);}
-
-
 	//! Comparison operator.
 	bool operator==(const MDPRaster& other) const {
 		if (baseRaster != other.baseRaster) return false;
@@ -146,7 +135,42 @@ public:
 			delta = other.delta;
         }
         return *this;
-	}	
+	}
+	
+	
+	//! Prints a representation of the state to the given stream.
+	//! Not the most efficient implementation, but works well for debugging purposes.
+	friend std::ostream& operator<<( std::ostream &os, const MDPRaster& raster) { return raster.print(os); }
+	virtual std::ostream& print(std::ostream& os) const {
+		auto size = baseRaster->getSize();
+		for(int i = 0; i < size._width; ++i) {
+			for(int j = 0; j < size._height; ++j) {
+				Engine::Point2D<int> idx(i,j);
+				os << "(" << i << "," << j << "): " << at(idx) << "/" << getMax(idx) << "  ";
+			}
+			os << std::endl;
+		}
+		return os;
+	}
+	
+	
+protected:
+	
+	//! This method encodes the logic of the modification of alread-ymodified cells.
+	int computeValue(int current, int value, int max) {
+		int future = current + value;
+		if (future < 0) throw Engine::Exception("Cannot add " + std::to_string(value) + " to an MDPRaster cell containing only " + std::to_string(current) + " units.");
+		return std::min(future, max);
+	}
+	
+	//! Returns the real value of any unaffected cell, modified by the delta attribute
+	//! and capped not to surpass the maximum.
+	int computeUnaffectedCellValue(const Engine::Point2D<int>& pos) const {
+		return std::min(getMax(pos), baseRaster->getValue(pos) + delta);
+	}
+	
+	//! A simple helper
+	inline int getMax(const Engine::Point2D<int>& pos) const { return baseRaster->getMaxValue(pos);}	
 };
 
 }

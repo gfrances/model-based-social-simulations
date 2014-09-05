@@ -74,11 +74,13 @@ void MDPProblem::next(const MDPState& s, action_t a, OutcomeVector& outcomes) co
 		MDPState(position, resourceRaster, resources, validActions), // The next problem state
 		1.0 // The probability with which this state is reached when applying action a on state s
 	));
+	
+	// Use with caution! Extremely verbose :-)
+	// PDEBUG("mdp", "Application of action " << *action << " to state " << s);
+	// PDEBUG("mdp", "Gives rise to state " << MDPState(position, resourceRaster, resources, validActions));
 }
 
-const Engine::World& MDPProblem::getWorld() const {
-	return *_agent.getWorld();
-}
+const Engine::World& MDPProblem::getWorld() const { return *_agent.getWorld(); }
 
 
   

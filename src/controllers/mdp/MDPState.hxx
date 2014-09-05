@@ -120,6 +120,18 @@ public:
 	
 	//! Return the state hash code. Note that this method is required by the mdp-engine library.
 	unsigned hash() const { return _hash;  }
+	
+	//! Prints a representation of the state to the given stream.
+	friend std::ostream& operator<<( std::ostream &os, const MDPState& state) { return state.print(os); }
+	virtual std::ostream& print(std::ostream& os) const {
+		os << "MDPState[" << _hash << "]. [Agent@(" << _agentPosition._x << "," << _agentPosition._y << ")#" << _agentResources << "]" << std::endl;
+		os << "Resources: " << std::endl << _resourceRaster << std::endl;
+		os << "Applicable actions: " << std::endl;
+		for(auto action:_applicableActions) {
+			os << "\t" << *action << std::endl;
+		}
+		return os;
+	}
 };
 
 } // namespaces
