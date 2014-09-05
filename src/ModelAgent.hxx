@@ -11,6 +11,8 @@
 namespace Model
 {
 
+class MDPRaster;
+	
 class ModelAgent : public Engine::Agent
 {
 private:
@@ -44,7 +46,9 @@ public:
 	
 	//! The resource-collection logic for an agent. Returns an amount of resources drawn uniformly at random between 1 and
 	//! the total amount of resources in the given cell, and updates the raster to substract that stochastic amount.
+	//! Note that we have an specific method for MDPRasters, which proceed a bit differently, for more clarity.
 	static int collectResources(Engine::DynamicRaster& resourceRaster, const Engine::Point2D<int>& position);
+	static int collectResources(MDPRaster& resourceRaster, const Engine::Point2D<int>& position);
 	
 	//! The resource-consumption at every time step logic for an agent.
 	//! Currently diminishes by one the amount of resources available to the agent.

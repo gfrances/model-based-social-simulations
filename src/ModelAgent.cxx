@@ -4,6 +4,7 @@
 #include <World.hxx>
 #include <GeneralState.hxx>
 #include <Environment.hxx>
+#include <MDPRaster.hxx>
 #include <utils/logging.hxx>
 
 namespace Model
@@ -63,7 +64,7 @@ void ModelAgent::reproduceAgent() {
 	_resources = consumeResourcesOnReproduction(_resources);
 }
 
-
+// This method has two versions, both should do the same
 int ModelAgent::collectResources(Engine::DynamicRaster& resourceRaster, const Engine::Point2D<int>& position) {
 	// The agent forages a certain stochastic amount of resources from her destination cell:
 	// The amount is drawn uniformly at random between 1 and the total amount of resources available on the cell.
@@ -74,6 +75,20 @@ int ModelAgent::collectResources(Engine::DynamicRaster& resourceRaster, const En
 	// A small performance optimization to avoid invoking the Random Number Generator if there is only one unit of resources.
 	int collectedResources = (availableResources == 1) ? 1 : Engine::GeneralState::statistics().getUniformDistValue(1, availableResources); 
 	resourceRaster.setValue(position, availableResources - collectedResources);
+	return collectedResources;
+}
+
+// This method has two versions, both should do the same
+int ModelAgent::collectResources(MDPRaster& resourceRaster, const Engine::Point2D<int>& position) {
+	// The agent forages a certain stochastic amount of resources from her destination cell:
+	// The amount is drawn uniformly at random between 1 and the total amount of resources available on the cell.
+	int availableResources = resourceRaster.at(position);
+	
+	if (availableResources == 0) return 0;
+	
+	// A small performance optimization to avoid invoking the Random Number Generator if there is only one unit of resources.
+	int collectedResources = (availableResources == 1) ? 1 : Engine::GeneralState::statistics().getUniformDistValue(1, availableResources); 
+	resourceRaster.add(position, -collectedResources);
 	return collectedResources;
 }
 
