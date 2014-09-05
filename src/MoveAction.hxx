@@ -53,7 +53,7 @@ public:
 	//! The execution of the action simply changes the location of the agent
 	//! (possibily to the same cell, if it is a no-move action
 	virtual void execute(Engine::Agent& agent) {
-		PDEBUG("actions", agent << " - " << describe());
+		PDEBUG("actions", agent << " - " << *this);
 		assert(isValidFor(agent));
 		agent.setPosition(getResultingPosition(agent.getPosition()));
 	}
@@ -120,7 +120,14 @@ public:
 		// Note that the vector is guaranteed to have size at least one
 		int idx = Engine::GeneralState::statistics().getUniformDistValue(0, validIndexes.size()-1);
 		return new MoveAction(validIndexes[idx]);
-	}	
+	}
+	
+	//! Prints a representation of the state to the given stream.
+	friend std::ostream& operator<<( std::ostream &os, const MoveAction& action) { return action.print(os); }
+	virtual std::ostream& print(std::ostream& os) const { 
+		os << describe();
+		return os;
+	}
 };
 
 }

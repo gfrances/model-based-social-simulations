@@ -32,7 +32,7 @@ float MDPProblem::cost( const MDPState& s, action_t a ) const {
 	
 	MoveAction::cptr action = s.getApplicableActions().at(a);
 	Engine::Point2D<int> position = action->getResultingPosition(s.getAgentPosition());
-	int availableResources = s.getResourceRaster().getValue(position);
+	int availableResources = s.getResourceRaster().at(position);
 	
 	int maximumAttainable = s.getAgentResources() + availableResources;
 	return maximumAttainable > 0 ? 10.0 / (float) maximumAttainable : 100;
@@ -51,8 +51,7 @@ void MDPProblem::next(const MDPState& s, action_t a, OutcomeVector& outcomes) co
 	auto validActions = MoveAction::computeApplicableActions(getWorld(), position);
 
 	// 3. The new resource raster, that will be affected by the agent's consumption and by the natural growth of resources
-	// The branch MDPRaster has an alternative here to try to reduce the performance impact of this copy
-	Engine::DynamicRaster resourceRaster(s.getResourceRaster()); // copy the map of resources from the previous state
+	MDPRaster resourceRaster(s.getResourceRaster()); // copy the map of resources from the previous state
 	
 	// 4. The new amount of resources held by the agent is obtained by applying the logic of resource consumption on
 	//    the resources that the agent already had, plus the ones that she collected.
@@ -60,8 +59,7 @@ void MDPProblem::next(const MDPState& s, action_t a, OutcomeVector& outcomes) co
 	int resources = ModelAgent::consumeDailyResources(s.getAgentResources() + collectedResources);
 	
 	// 5. Only after subtracting the agent's consumption, we apply the natural growth to the raster.
-	resourceRaster.updateRasterIncrement();
-	
+	resourceRaster.addAll(Environment::naturalGrowth(1));
 	
 	// 6. Check for the reproduction of the agent - Note that we do not actually reproduce the agent,
 	// only reduce the amount of resources, but this does not affect the cost, as we do not want to 
@@ -76,11 +74,13 @@ void MDPProblem::next(const MDPState& s, action_t a, OutcomeVector& outcomes) co
 		MDPState(position, resourceRaster, resources, validActions), // The next problem state
 		1.0 // The probability with which this state is reached when applying action a on state s
 	));
+	
+	// Use with caution! Extremely verbose :-)
+	// PDEBUG("mdp", "Application of action " << *action << " to state " << s);
+	// PDEBUG("mdp", "Gives rise to state " << MDPState(position, resourceRaster, resources, validActions));
 }
 
-const Engine::World& MDPProblem::getWorld() const {
-	return *_agent.getWorld();
-}
+const Engine::World& MDPProblem::getWorld() const { return *_agent.getWorld(); }
 
 
   

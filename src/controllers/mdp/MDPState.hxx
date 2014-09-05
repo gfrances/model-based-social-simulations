@@ -8,6 +8,7 @@
 #include <ModelAgent.hxx>
 #include <Environment.hxx>
 #include <MoveAction.hxx>
+#include <MDPRaster.hxx>
 
 namespace Model
 {
@@ -23,7 +24,7 @@ protected:
 	Engine::Point2D<int> _agentPosition;
 	
 	//! The map of resources
-	Engine::DynamicRaster _resourceRaster;
+	MDPRaster _resourceRaster;
 	
 	//! The amount of resources that the agent holds.
 	int _agentResources;
@@ -40,16 +41,7 @@ protected:
 		hashKey.add(_agentPosition._x);
 		hashKey.add(_agentPosition._y);
 		hashKey.add(_agentResources);
-		
-		// Hash the resource raster - TODO - Use a _discretized_, and possibly with limited information, resource map.
-		const auto& size = _resourceRaster.getSize();
-		for(unsigned i = 0; i < size._width; ++i)
-		{
-			for(unsigned j = 0; j < size._height; ++j) {
-				hashKey.add(_resourceRaster.get(i,j));
-			}
-		}
-		
+		hashKey.add(_resourceRaster.hash()); // TODO - Use a _discretized_, and possibly with limited information, resource map.
 		return hashKey.code();
 	}
 	
@@ -60,7 +52,7 @@ public:
 	//!
 	// TODO - Implement a move constructor to optimize performance
 	MDPState(const Engine::Point2D<int>& position,
-			 const Engine::DynamicRaster& resourceRaster,
+			 const MDPRaster& resourceRaster,
 		     int agentResources,
 		     const std::vector<MoveAction::cptr>& applicableActions) :
 		_agentPosition(position),
@@ -124,10 +116,22 @@ public:
 	const std::vector<MoveAction::cptr> getApplicableActions() const { return _applicableActions; }
 	
 	//! Return the resource raster of the state
-	const Engine::DynamicRaster& getResourceRaster() const { return _resourceRaster; }
+	const MDPRaster& getResourceRaster() const { return _resourceRaster; }
 	
 	//! Return the state hash code. Note that this method is required by the mdp-engine library.
 	unsigned hash() const { return _hash;  }
+	
+	//! Prints a representation of the state to the given stream.
+	friend std::ostream& operator<<( std::ostream &os, const MDPState& state) { return state.print(os); }
+	virtual std::ostream& print(std::ostream& os) const {
+		os << "MDPState[" << _hash << "]. [Agent@(" << _agentPosition._x << "," << _agentPosition._y << ")#" << _agentResources << "]" << std::endl;
+		os << "Resources: " << std::endl << _resourceRaster << std::endl;
+		os << "Applicable actions: " << std::endl;
+		for(auto action:_applicableActions) {
+			os << "\t" << *action << std::endl;
+		}
+		return os;
+	}
 };
 
 } // namespaces
