@@ -49,9 +49,9 @@ void MDPProblem::next(const MDPState& s, action_t a, OutcomeVector& outcomes) co
 	
 	// 2. The precomputed list of valid actions
 	auto validActions = MoveAction::computeApplicableActions(getWorld(), position);
-	
-	// 3. The new resource raster, affected by the agent's consumption
-	// TODO - This is a performance bottleneck, should be optimized by using some derived type of raster.
+
+	// 3. The new resource raster, that will be affected by the agent's consumption and by the natural growth of resources
+	// The branch MDPRaster has an alternative here to try to reduce the performance impact of this copy
 	Engine::DynamicRaster resourceRaster(s.getResourceRaster()); // copy the map of resources from the previous state
 	
 	// 4. The new amount of resources held by the agent is obtained by applying the logic of resource consumption on
@@ -59,7 +59,11 @@ void MDPProblem::next(const MDPState& s, action_t a, OutcomeVector& outcomes) co
 	int collectedResources = ModelAgent::collectResources(resourceRaster, position); // (This already updates the raster)
 	int resources = ModelAgent::consumeDailyResources(s.getAgentResources() + collectedResources);
 	
-	// 5. Check for the reproduction of the agent - Note that we do not actually reproduce the agent,
+	// 5. Only after subtracting the agent's consumption, we apply the natural growth to the raster.
+	resourceRaster.updateRasterIncrement();
+	
+	
+	// 6. Check for the reproduction of the agent - Note that we do not actually reproduce the agent,
 	// only reduce the amount of resources, but this does not affect the cost, as we do not want to 
 	// induce the agent not to reproduce.
     if (ModelAgent::checkReproduction(resources)) {
