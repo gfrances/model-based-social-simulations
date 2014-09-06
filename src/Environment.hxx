@@ -4,7 +4,7 @@
 
 #include <World.hxx>
 #include <AgentFactory.hxx>
-
+#include <EnvironmentConfig.hxx>
 
 namespace Engine
 {
@@ -14,7 +14,7 @@ namespace Engine
 namespace Model 
 {
 
-class EnvironmentConfig; class ModelAgent;
+class ModelAgent;
 
 class Environment : public Engine::World
 {
@@ -23,7 +23,7 @@ protected:
 	void createAgents();
 	
 	//! Return the current world configuration.
-	const EnvironmentConfig& getModelConfig() const;
+	const EnvironmentConfig::cptr getModelConfig() const;
 	
 	//! The factory that creates the agents
 	AgentFactory agentFactory;
@@ -35,7 +35,7 @@ public:
 	virtual ~Environment();
 	
 	//! Overload the parent class method to add custom logging
-	void addAgent(ModelAgent* agent);
+	void addAgent(ModelAgent* agent, bool executedAgent = true);
 	
 	//! Overload the parent class method to add custom logging
 	void step();

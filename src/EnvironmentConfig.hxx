@@ -3,6 +3,7 @@
 #define __EnvironmentConfig_hxx__
 
 #include <vector>
+#include <memory>
 #include <Config.hxx>
 #include <Size.hxx>
 
@@ -42,6 +43,8 @@ protected:
 	void loadSingleControllerConfig(TiXmlElement* element);
 	
 public:
+	typedef std::shared_ptr<const EnvironmentConfig> cptr;
+	
 	EnvironmentConfig(const std::string& filename);
 	virtual ~EnvironmentConfig();
 

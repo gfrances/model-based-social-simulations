@@ -21,13 +21,13 @@ Environment::~Environment() {}
 void Environment::createRasters() {
     registerDynamicRaster("resources", true, RESOURCE_RASTER_IDX);
     Engine::DynamicRaster& raster = getDynamicRaster(RESOURCE_RASTER_IDX);
-    Engine::GeneralState::rasterLoader().fillGDALRaster(raster, getModelConfig().getMap(), getBoundaries());
+    Engine::GeneralState::rasterLoader().fillGDALRaster(raster, getModelConfig()->getMap(), getBoundaries());
 	updateRasterToMaxValues(RESOURCE_RASTER_IDX);
 }
 
 void Environment::createAgents() {
 	unsigned id = 1;
-	for (const ControllerConfig& config:getModelConfig().getControllerConfigurations()) {
+	for (const ControllerConfig& config:getModelConfig()->getControllerConfigurations()) {
 		agentFactory.registerControllerType(config);
 		
 		for(unsigned i = 0; i < config.getPopulation(); i++)
@@ -42,8 +42,8 @@ void Environment::createAgents() {
 	}
 }
 
-void Environment::addAgent(ModelAgent* agent) {
-	Engine::World::addAgent(agent);
+void Environment::addAgent(ModelAgent* agent, bool executedAgent) {
+	Engine::World::addAgent(agent, executedAgent);
 	PDEBUG("population", "[Timestep: " << getCurrentTimeStep() << "] Agent created: " << *agent);
 }
 
@@ -57,7 +57,7 @@ void Environment::step() {
 }
 
 
-const EnvironmentConfig& Environment::getModelConfig() const { return static_cast<const EnvironmentConfig&>(getConfig()); }
+const EnvironmentConfig::cptr Environment::getModelConfig() const { return std::static_pointer_cast<EnvironmentConfig>(_config); }
 
 void Environment::logAgentsState() const {
 	PDEBUG("agents", "");
