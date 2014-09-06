@@ -25,7 +25,7 @@ public:
 		return MoveAction::createRandomAction(agent);
 	}
 	
-	virtual std::string getType() const { return "Lazy"; }
+	virtual std::string getType() const { return "lazy"; }
 };
 
 }

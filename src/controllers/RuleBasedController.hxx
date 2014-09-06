@@ -23,7 +23,7 @@ public:
 		return MoveAction::createRandomAction(agent);
 	}
 	
-	virtual std::string getType() const { return "Rule"; }
+	virtual std::string getType() const { return "rule-based"; }
 };
 
 }

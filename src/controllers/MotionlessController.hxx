@@ -21,7 +21,7 @@ public:
 		return new MoveAction(MoveAction::DIRECTION_STAY);
 	}
 	
-	virtual std::string getType() const { return "Motionless"; }
+	virtual std::string getType() const { return "motionless"; }
 };
 
 }

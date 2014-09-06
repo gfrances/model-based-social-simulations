@@ -37,11 +37,14 @@ public:
 	ModelAgent(const std::string& id, const AgentController::cptr controller);
 	
 	virtual ~ModelAgent();
+	
+	//! We overload the type detection routine to make use of the controller type
+	virtual std::string getType() const;
 
-    // decision making process occurs inside this method
+    // The decision-making process occurs inside this method
 	void selectActions();
 	
-    // update state after selecting and executing actions
+    // Update the agent's state after the selection and execution of actions
 	void updateState();
 	
 	//! The resource-collection logic for an agent. Returns an amount of resources drawn uniformly at random between 1 and

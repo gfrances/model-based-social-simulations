@@ -21,6 +21,10 @@ ModelAgent::ModelAgent(const std::string& id, const AgentController::cptr contro
 
 ModelAgent::~ModelAgent() {}
 
+std::string ModelAgent::getType() const {
+	return getController()->getType();
+}
+
 void ModelAgent::selectActions() {
 	assert(_actions.size()==0);
 	// We select one single action, and the logic of selection is embedded in the particular instance
@@ -102,6 +106,7 @@ void ModelAgent::serialize() {
 	serializeAttribute("resources", _resources);
 	serializeAttribute("numChildren", _numChildren);
 }
+
 
 //! Helpers to return the agent's world's resource raster, const- and non-const versions
 const Engine::DynamicRaster& ModelAgent::getResourceRaster() const {

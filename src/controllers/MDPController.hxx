@@ -30,7 +30,7 @@ public:
 	MDPController(const ControllerConfig& config);
 	virtual ~MDPController() {}
 	
-	virtual std::string getType() const { return "MDP"; }
+	virtual std::string getType() const { return "mdp"; }
 	
 	//! In order to select the appropriate action, we setup an MDPProblem and "solve it" using UCT.
 	virtual Engine::Action* selectAction(const ModelAgent& agent) const;

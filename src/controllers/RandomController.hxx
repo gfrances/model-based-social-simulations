@@ -22,7 +22,7 @@ public:
 		return MoveAction::createRandomAction(agent);
 	}
 	
-	virtual std::string getType() const { return "Random"; }
+	virtual std::string getType() const { return "random"; }
 };
 
 }
