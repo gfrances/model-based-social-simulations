@@ -17,6 +17,8 @@ public:
 	unsigned horizon;
 	float explorationBonus;
 	unsigned population;
+	
+	float alpha; // alpha parameter for the aplha-lazy controllers.
 
 	const std::string& getType() const { return type; }
 	unsigned getWidth() const { return width; }

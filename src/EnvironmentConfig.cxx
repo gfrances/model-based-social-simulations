@@ -46,7 +46,10 @@ void EnvironmentConfig::loadSingleControllerConfig(TiXmlElement* element) {
 		config.horizon = getParamUnsignedFromElem(element, "horizon");
 		config.width = getParamUnsignedFromElem(element, "width");
 		config.explorationBonus = getParamUnsignedFromElem(element, "explorationBonus");		
- 	}
+ 	} else if (config.type == "lazy") {
+		config.alpha = getParamFloatFromElem(element, "alpha");
+	}
+	
  	_controllers.push_back(config);
 }
 

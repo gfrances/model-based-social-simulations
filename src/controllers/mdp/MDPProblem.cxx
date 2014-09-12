@@ -56,7 +56,7 @@ void MDPProblem::next(const MDPState& s, action_t a, OutcomeVector& outcomes) co
 	// 4. The new amount of resources held by the agent is obtained by applying the logic of resource consumption on
 	//    the resources that the agent already had, plus the ones that she collected.
 	int collectedResources = ModelAgent::collectResources(resourceRaster, position); // (This already updates the raster)
-	int resources = ModelAgent::consumeDailyResources(s.getAgentResources() + collectedResources);
+	int resources = s.getAgentResources() + collectedResources - _agent.dailyResourceConsumption();
 	
 	// 5. Only after subtracting the agent's consumption, we apply the natural growth to the raster.
 	resourceRaster.addAll(Environment::naturalGrowth(1));
@@ -66,7 +66,7 @@ void MDPProblem::next(const MDPState& s, action_t a, OutcomeVector& outcomes) co
 	// induce the agent not to reproduce.
     if (ModelAgent::checkReproduction(resources)) {
 		resources = ModelAgent::consumeResourcesOnReproduction(resources);
-	}	
+	}
 	
 
 	// TODO: Using std::move for the resource raster, after implementing a move constructor, would increase performance.

@@ -38,7 +38,7 @@ void ModelAgent::updateState() {
 	_resources += collectResources(getResourceRaster(), getPosition()); // Collect the resources
 	
 	// Consume the resources
-	_resources = consumeDailyResources(_resources);
+	_resources -= dailyResourceConsumption();
 	
 	// Check for the death of the agent
     if (checkDeathByStarvation(_resources)) {

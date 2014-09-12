@@ -37,7 +37,7 @@ void AgentFactory::createController(const ControllerConfig& config) {
  	} else if (type == "motionless") {
 		controller = std::make_shared<MotionlessController>();
  	} else if (type == "lazy") {
-		controller =  std::make_shared<LazyController>();
+		controller =  std::make_shared<LazyController>(config);
  	} else if (type == "greedy") {
 		controller = std::make_shared<GreedyController>();
  	} else if (type == "rule") {

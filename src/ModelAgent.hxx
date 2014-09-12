@@ -55,7 +55,7 @@ public:
 	
 	//! The resource-consumption at every time step logic for an agent.
 	//! Currently diminishes by one the amount of resources available to the agent.
-	static int consumeDailyResources(int resources) { return resources - 1; }
+	static int dailyResourceConsumption() { return 1; }
 	
 	//! The resource-consumption after the reproduction of the agent.
 	//! Currently sets the number of resources to the initial, fixed value.
