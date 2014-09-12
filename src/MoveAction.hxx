@@ -26,7 +26,7 @@ public:
 	typedef unsigned DirectionIdx;
 	
 	//! A vector with all the possible directions, expressed as coordinate points.
-	static const std::vector<Engine::Point2D<int>> directions;
+	static const std::vector<Engine::Point2D<int>> DIRECTIONS;
 	
 	//! A helper vector with the direction names, to print info about them.
 	static const std::vector<std::string> names;
@@ -40,14 +40,14 @@ protected:
 	
 public:
 	MoveAction(DirectionIdx direction) : _direction(direction) {
-		assert(_direction < directions.size());
+		assert(_direction < DIRECTIONS.size());
 	}
 	virtual ~MoveAction() {}
 	
 	//! Copy constructor
 	MoveAction(const MoveAction& other) :
 	_direction(other._direction) {
-		assert(_direction < directions.size());
+		assert(_direction < DIRECTIONS.size());
 	}
 
 	//! The execution of the action simply changes the location of the agent
@@ -60,7 +60,7 @@ public:
 	
 	//! Return the new position that results from applying the current action to the given `position`
 	inline Engine::Point2D<int> getResultingPosition(const Engine::Point2D<int>& position) const {
-		return position + directions[_direction];
+		return position + DIRECTIONS[_direction];
 	}
 	
 	//! Return a string describing the current action unambigously.
@@ -100,17 +100,17 @@ public:
 	static std::vector<DirectionIdx> computeValidDirectionIndexes(const Engine::World& world, const Engine::Point2D<int>& position) {
 		// We skip the first element (also in the iteration), which is the "no-move" direction and is thus always valid
 		std::vector<DirectionIdx> validIndexes = {0};
-		for (unsigned i = 1; i < directions.size(); ++i) {
-			if (world.checkPosition(position + directions[i])) {
+		for (unsigned i = 1; i < DIRECTIONS.size(); ++i) {
+			if (world.checkPosition(position + DIRECTIONS[i])) {
 				validIndexes.push_back(i);
 			}
 		}
 		return validIndexes;
-	}	
+	}
 	
 	//! Returns one of the nine possible move actions chosen uniformly at random.
 	static MoveAction* createRandomAction() {
-		int idx = Engine::GeneralState::statistics().getUniformDistValue(0, directions.size());
+		int idx = Engine::GeneralState::statistics().getUniformDistValue(0, DIRECTIONS.size());
 		return new MoveAction(idx);
  	}
 	

@@ -7,7 +7,7 @@ namespace Model
 {
 	// Map between the nine possible directions we consider and their corresponding coordinate pair.
 	// Note that the order here matters and must correlate the order in which the directions are declared.
-	const std::vector<Engine::Point2D<int>> MoveAction::directions = {
+	const std::vector<Engine::Point2D<int>> MoveAction::DIRECTIONS = {
 		Engine::Point2D<int>(0, 0),   // Null move, i.e. stay in the same cell.
 		Engine::Point2D<int>(0, 1),   // move-N
 		Engine::Point2D<int>(1, 1),   // move-NE
