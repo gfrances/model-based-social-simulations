@@ -16,12 +16,11 @@ A number of simulation parameters can be specified in the `config.xml` file, tha
 ## Dependencies
 
 Besides the [requirements](https://github.com/xrubio/pandora/blob/master/docs/tutorials/00_installing.txt) imposed by the [Pandora framework](https://github.com/xrubio/pandora), 
-In order for the build script to work, the path to the Pandora code and libraries must be provided, either through the `PANDORA_PATH`
+In order for the build script to work, the path to the Pandora code and libraries must be provided, either through the `PANDORAPATH`
 environment variable, e.g. by setting the following in your `~/.bashrc` script:
 
-	export PANDORA_PATH=${HOME}/projects/simulpast/pandora-main/pandora
+	export PANDORAPATH=${HOME}/projects/simulpast/pandora-main
+	export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:${PANDORAPATH}/lib
 
-or through a command line `pandora` argument when invoking scons, e.g:
-	
-	scons pandora=${HOME}/projects/simulpast/pandora-main/pandora
+
 	

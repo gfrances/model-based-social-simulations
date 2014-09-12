@@ -1,0 +1,14 @@
+<?xml version="1.0" ?>
+<config>
+	<!-- Global simulation parameters -->
+	<output resultsFile="${output}" logsDir="${logs}"/>
+	<numSteps value="${timesteps}" serializeResolution="1"/>
+	<size width="50" height="50"/>
+    <environment map="${map}"/>
+
+    <!-- Agent configuration parameters -->
+	<agents>
+        ${agent_config}
+	</agents>
+</config>
+
