@@ -4,9 +4,7 @@ agents = ['ModelAgent']
 world = 'Environment'
 namespaceAgents = ['Model']
 
-
 pandora_path = os.getenv('PANDORAPATH', '/usr/local/pandora')
-grass64_path = os.getenv('GRASS64_PATH', '/usr/lib/grass64')
 
 vars = Variables('custom.py')
 vars.Add(BoolVariable('debug', 'compile with debug flags', 'no'))
@@ -29,7 +27,7 @@ env.Append( BUILDERS = {'GenerateMPICode' : generateMPICodeBuilder})
 env.Append(LINKFLAGS = '-fopenmp')
 env.Append(CCFLAGS = ['-DTIXML_USE_STL', '-Wall', '-pedantic', '-std=c++0x' ])
 env.Append(CPPPATH = ['.', '../libs/mdp-engine', pandora_path + '/include'])
-env.Append(LIBPATH = [pandora_path + '/lib', grass64_path + '/lib'])
+env.Append(LIBPATH = [pandora_path + '/lib'])
 env.Append(LIBS = ['tinyxml'])
 
 # Environment-dependent flags:
