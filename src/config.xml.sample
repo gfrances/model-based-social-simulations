@@ -2,7 +2,7 @@
 <config>  
 	<!-- Global simulation parameters -->
 	<output resultsFile="./data/model.h5" logsDir="./logs"/>
-	<numSteps value="60" serializeResolution="1"/>
+	<numSteps value="100" serializeResolution="1"/>
 	<size width="50" height="50"/>
     <environment map="../maps/r25_s50x50.tif"/>
     
@@ -12,14 +12,14 @@
 				MDP, random, motionless, lazy, greedy, rule
 		-->
 		<controller type= "MDP"
-			population="50"
-			horizon="50"
-			width="150"
+			population="10"
+			horizon="10"
+			width="500"
 			explorationBonus="10"
 		/>
 		
 		<controller type= "random"
-			population="50"
+			population="10"
 		/>
 		
 	</agents>
