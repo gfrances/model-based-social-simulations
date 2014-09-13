@@ -3,10 +3,10 @@ import os
 import time
 from string import Template
 
-from .helper import HOMEPATH, mkdirp, save_file, load_file
+from .helper import HOMEPATH, mkdirp, save_file, load_file, DISTRIBUTION_BASE_DIR
 
 
-MAPS_DIR = os.path.abspath('../maps')  # This is the place were the benchmark maps reside.
+MAPS_DIR = DISTRIBUTION_BASE_DIR + '/maps'  # This is the place were the benchmark maps reside.
 RESULTS_DIR = os.path.abspath(HOMEPATH + '/projects/simulpast/experiments')
 
 CONTROLLER_CONFIG = dict(
@@ -51,7 +51,7 @@ class SingleExperiment(object):
 
     def __init__(self, timesteps, simulation_map, label, runs, agents=None):
         self.timesteps = timesteps
-        self.map = MAPS_DIR + '/' + simulation_map
+        self.map = MAPS_DIR + '/' + simulation_map + '.tif'
         self.runs = runs
         self.agents = agents if agents else []
         self.label = label
@@ -104,8 +104,8 @@ class AggregateExperiment(object):
     def __init__(self, args):
         self.timestamp = time.strftime("%Y%m%d_%H%M")
         self.timeout = args.timeout
-        self.mem = '{}GB'.format(args.mem)
-        self.name = '.'.join([args.name, str(args.timeout) + 'sec', self.mem, self.timestamp])
+        self.mem = args.mem
+        self.name = '.'.join([args.name, str(args.timeout) + 'sec', '{}GB'.format(args.mem), self.timestamp])
         self.directory = RESULTS_DIR + '/' + self.name
         self.singles = []
 

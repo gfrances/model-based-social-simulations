@@ -2,9 +2,11 @@
 # Some helper methods
 #
 import os
+from os.path import dirname
 import stat
 
 HOMEPATH = os.path.expanduser("~")
+DISTRIBUTION_BASE_DIR = dirname(dirname(dirname(os.path.realpath(__file__))))
 
 
 def mkdirp(directory):

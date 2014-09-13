@@ -2,7 +2,7 @@ import os
 from string import Template
 
 from .experiment import AggregateExperiment
-from .helper import HOMEPATH, mkdirp, write_code, load_file
+from .helper import HOMEPATH, mkdirp, write_code, load_file, DISTRIBUTION_BASE_DIR
 
 
 MAIL = 'guillem.frances@upf.edu'
@@ -43,16 +43,16 @@ class Taskgen(object):
             simulpast_dir=SIMULPAST_DIR
         )
 
-        log_dir = SIMULPAST_DIR + "/experiments/logs/" + self.experiment.name
+        log_dir = DISTRIBUTION_BASE_DIR + "/experiments/logs/" + self.experiment.name
         mkdirp(log_dir)
 
         task_filename = log_dir + "/run-task.sh"
 
         write_code(task_code, task_filename)
 
-        qsub_line = "qsub -t 1-{noptions} -l h_rt={rt} -l h_cpu={timeout} -l h_vmem={mem}G " \
-                    " -e  {log_dir} -o {log_dir} " \
-                    "-N {task_name} -cwd -m as -M {mail} -hard -binding linear:16 {task}".format(
+        qsub_line = "qsub -t 1-{noptions} -l h_rt={rt} -l h_cpu={timeout} -l h_vmem={mem}G \\\n\t\t" \
+                    " -e  {log_dir} \\\n\t\t -o {log_dir} \\\n\t\t" \
+                    " -N {task_name} -cwd -m as -M {mail} -hard -binding linear:16 \\\n\t\t {task}".format(
                         noptions=len(lines),
                         mail=MAIL,
                         task=task_filename,
@@ -69,7 +69,7 @@ class Taskgen(object):
         write_code(qsub_line, qsub_filename)
 
         print('A total of {} sub-tasks have been generated'.format(len(lines)))
-        print("Run task '{0}' by executing the following, available also in '{1}':".format(
+        print("Run task '{0}' by executing the following: \n\t{1}".format(
             self.experiment.name, qsub_filename))
-        print('\n\t' + qsub_line + '\n')
+        print('\n\nOr, alternatively, run:\n\t' + qsub_line + '\n')
         print("Add the option -verify to see what would be submitted.")
