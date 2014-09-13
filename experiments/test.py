@@ -2,8 +2,9 @@
 # -*- coding: utf-8 -*-
 import argparse
 
-from .exp import AggregateExperiment, MDPAgentConfiguration, SingleExperiment
-from .sge_taskgen import Taskgen
+# from experiments.src.exp import AggregateExperiment, MDPAgentConfiguration, SingleExperiment
+from src.experiment import AggregateExperiment, MDPAgentConfiguration, SingleExperiment
+from src.sge_taskgen import Taskgen
 
 
 def main():
@@ -22,7 +23,8 @@ def main():
 
     exp.bootstrap()
 
-    Taskgen(exp).print()
+    t = Taskgen(exp)
+    t.run()
 
 
 def parse_arguments():

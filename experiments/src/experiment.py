@@ -3,7 +3,7 @@ import os
 import time
 from string import Template
 
-from experiments.src.helper import HOMEPATH, mkdirp, save_file, load_file
+from .helper import HOMEPATH, mkdirp, save_file, load_file
 
 
 MAPS_DIR = os.path.abspath('../maps')  # This is the place were the benchmark maps reside.

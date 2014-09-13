@@ -1,7 +1,7 @@
 import os
 from string import Template
 
-from .exp import AggregateExperiment
+from .experiment import AggregateExperiment
 from .helper import HOMEPATH, mkdirp, write_code, load_file
 
 
@@ -18,7 +18,7 @@ class Taskgen(object):
         assert isinstance(experiment, AggregateExperiment)
         self.experiment = experiment
 
-    def print(self):
+    def run(self):
         lines = self.generate_task()
         self.print_task(lines)
 
