@@ -14,9 +14,9 @@ def main():
     """
     exp = AggregateExperiment(parse_arguments())
 
-    for width in range(100, 1000, 100):
+    for width in range(200, 1000, 200):
         agent = MDPAgentConfiguration(population=10, horizon=10, width=width)
-        exp.add_single(SingleExperiment(timesteps=100, runs=10,
+        exp.add_single(SingleExperiment(timesteps=100, runs=5,
                                         simulation_map='r25_s50x50',
                                         label="width_{}".format(width),
                                         agents=[agent]))
