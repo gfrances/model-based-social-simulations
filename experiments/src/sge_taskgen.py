@@ -1,46 +1,20 @@
-import os
 from string import Template
 
-from .experiment import AggregateExperiment
-from .helper import HOMEPATH, mkdirp, write_code, load_file, DISTRIBUTION_BASE_DIR
+from .helper import mkdirp, write_code, load_file, DISTRIBUTION_BASE_DIR
+import taskgen
 
 
-MAIL = 'guillem.frances@upf.edu'
-SIMULPAST_DIR = os.path.abspath(HOMEPATH + '/projects/simulpast')
-SIMULATOR = '${SIMULPAST_DIR}/model-based-social-simulations/src/simulation.bin'
-
-
-class Taskgen(object):
+class SGETaskgen(taskgen.Taskgen):
     """
     A task generator specific for the Sun Grid Engine.
     """
-    def __init__(self, experiment):
-        assert isinstance(experiment, AggregateExperiment)
-        self.experiment = experiment
-
-    def run(self):
-        lines = self.generate_task()
-        self.print_task(lines)
-
-    def generate_task(self):
-        lines = []
-        configs = [config for single in self.experiment.singles for config in single.configs]
-
-        for i, config in enumerate(configs, 1):
-            lines.append("{case})  {bin} {config} ;;".format(
-                case=i,
-                bin=SIMULATOR,
-                config=config.replace(SIMULPAST_DIR, '${SIMULPAST_DIR}')
-            ))
-
-        return lines
 
     def print_task(self, lines):
 
         tpl = Template(load_file('tpl/run-task.sh'))
         task_code = tpl.substitute(
             task_options='\n'.join(lines),
-            simulpast_dir=SIMULPAST_DIR
+            simulpast_dir=taskgen.SIMULPAST_DIR
         )
 
         log_dir = DISTRIBUTION_BASE_DIR + "/experiments/logs/" + self.experiment.name
@@ -54,7 +28,7 @@ class Taskgen(object):
                     " -e  {log_dir} \\\n\t\t -o {log_dir} \\\n\t\t" \
                     " -N {task_name} -cwd -m as -M {mail} -hard -binding linear:16 \\\n\t\t {task}".format(
                         noptions=len(lines),
-                        mail=MAIL,
+                        mail=taskgen.MAIL,
                         task=task_filename,
                         task_name=self.experiment.name,
                         # The CPU time HARD timeout  -  leave some small extra time

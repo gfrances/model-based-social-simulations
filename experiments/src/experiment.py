@@ -44,6 +44,14 @@ class RandomAgentConfiguration(AgentConfiguration):
         return 'random'
 
 
+class LazyAgentConfiguration(AgentConfiguration):
+    def __init__(self, population, alpha=1):
+        super().__init__(population)
+        self.alpha = alpha
+
+    def get_type(self):
+        return 'lazy'
+
 class SingleExperiment(object):
     """
     A single experiment is an experiment with one single configuration file, but that might have several runs.
