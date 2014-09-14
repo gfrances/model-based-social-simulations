@@ -7,8 +7,8 @@
     <environment map="${map}"/>
 
     <!-- Agent configuration parameters -->
-	<agents>
+    <agents>
         ${agent_config}
-	</agents>
+    </agents>
 </config>
 

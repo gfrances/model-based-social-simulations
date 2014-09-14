@@ -4,7 +4,7 @@ import argparse
 
 # from experiments.src.exp import AggregateExperiment, MDPAgentConfiguration, SingleExperiment
 from src.experiment import AggregateExperiment, MDPAgentConfiguration, SingleExperiment
-from src.sge_taskgen import Taskgen
+from src.sge_taskgen import SGETaskgen
 
 
 def main():
@@ -23,7 +23,7 @@ def main():
 
     exp.bootstrap()
 
-    t = Taskgen(exp)
+    t = SGETaskgen(exp)
     t.run()
 
 

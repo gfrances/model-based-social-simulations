@@ -13,7 +13,9 @@ CONTROLLER_CONFIG = dict(
     mdp='<controller type= "MDP" population="${population}" horizon="${horizon}" width="${width}" '
         'explorationBonus="${bonus}"/>',
     random='<controller type= "random" population="${population}"/>',
-    lazy='<controller type= "lazy" population="${population}" alpha="${alpha}"/>'
+    lazy='<controller type= "lazy" population="${population}" alpha="${alpha}"/>',
+    greedy='<controller type= "greedy" population="${population}" />',
+    motionless='<controller type= "motionless" population="${population}"/>'
 )
 
 
@@ -44,6 +46,16 @@ class RandomAgentConfiguration(AgentConfiguration):
         return 'random'
 
 
+class GreedyAgentConfiguration(AgentConfiguration):
+    def get_type(self):
+        return 'greedy'
+
+
+class MotionlessAgentConfiguration(AgentConfiguration):
+    def get_type(self):
+        return 'motionless'
+
+
 class LazyAgentConfiguration(AgentConfiguration):
     def __init__(self, population, alpha=1):
         super().__init__(population)
@@ -51,6 +63,7 @@ class LazyAgentConfiguration(AgentConfiguration):
 
     def get_type(self):
         return 'lazy'
+
 
 class SingleExperiment(object):
     """

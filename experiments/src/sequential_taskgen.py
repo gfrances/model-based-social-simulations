@@ -31,6 +31,5 @@ class SequentialTaskgen(taskgen.Taskgen):
         runner_filename = log_dir + '/run.sh'
         write_code(runner, runner_filename)
 
-        print('A total of {} sub-tasks have been generated'.format(len(lines)))
-        print("Run task '{0}' by executing the following: \n\t{1}".format(
-            self.experiment.name, runner_filename))
+        print("A total of {} sub-tasks have been generated. Run task '{}' by executing: \n\n\t{}\n"
+              .format(len(lines), self.experiment.name, runner_filename))
