@@ -1,7 +1,7 @@
 from string import Template
 
 from .helper import mkdirp, write_code, load_file, DISTRIBUTION_BASE_DIR
-import taskgen
+from src import taskgen
 
 
 class SGETaskgen(taskgen.Taskgen):
@@ -17,7 +17,7 @@ class SGETaskgen(taskgen.Taskgen):
             simulpast_dir=taskgen.SIMULPAST_DIR
         )
 
-        log_dir = DISTRIBUTION_BASE_DIR + "/experiments/logs/" + self.experiment.name
+        log_dir = self.experiment.directory + '/run'
         mkdirp(log_dir)
 
         task_filename = log_dir + "/run-task.sh"

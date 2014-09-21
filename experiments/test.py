@@ -5,6 +5,7 @@ import argparse
 # from experiments.src.exp import AggregateExperiment, MDPAgentConfiguration, SingleExperiment
 from src.experiment import AggregateExperiment, MDPAgentConfiguration, SingleExperiment
 from src.sge_taskgen import SGETaskgen
+from src.sequential_taskgen import SequentialTaskgen
 
 
 def main():
