@@ -37,7 +37,7 @@ if env['debug']:
         env.Append(CCFLAGS = '-DPANDORAEDEBUG')
     env.Append(LIBS = ['pandorad'])
 else:
-    env.Append( CCFLAGS = ['-O3'] )
+    env.Append( CCFLAGS = ['-O3', '-DNDEBUG'] )
     env.Append(LIBS = ['pandora'])
 
 
