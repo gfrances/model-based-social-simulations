@@ -29,6 +29,11 @@ class AgentConfiguration(object):
     def generate_config(self):
         return Template(CONTROLLER_CONFIG[self.get_type()]).substitute(self.__dict__)
 
+    def data(self):
+        t = dict(type=self.get_type())
+        t.update(self.__dict__)
+        return t
+
 
 class MDPAgentConfiguration(AgentConfiguration):
     def __init__(self, population, width, horizon, bonus=10):
@@ -148,4 +153,6 @@ class AggregateExperiment(object):
         return "Experiment {}".format(self.name)
 
     def dump(self):
-        return json.dumps(self, default=lambda o: o.__dict__)
+        def dumper(o):
+            return o.data() if hasattr(o, "data") else o.__dict__
+        return json.dumps(self, default=dumper)
