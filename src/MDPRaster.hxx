@@ -48,7 +48,7 @@ protected:
 public:
 	
 	//! MDP Rasters can only be constructed from a dynamic raster
-	MDPRaster(const Engine::DynamicRaster& baseRaster) :
+	explicit MDPRaster(const Engine::DynamicRaster& baseRaster) :
 		// We make a full copy of the dynamic raster (just in case it gets erased or modified) and then get a smart pointer of it.
 		baseRaster( std::make_shared<const Engine::DynamicRaster>(baseRaster) ),
 		modified(),

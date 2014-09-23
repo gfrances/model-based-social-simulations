@@ -14,7 +14,7 @@ namespace Model
 MDPProblem::MDPProblem(const ControllerConfig& config, const ModelAgent& agent) :
 	_config(config),
 	_agent(agent),
-	initialState(agent.getPosition(), agent.getResourceRaster(), agent.getResources(),  MoveAction::computeApplicableActions(agent))
+	initialState(agent.getPosition(), MDPRaster(agent.getResourceRaster()), agent.getResources(),  MoveAction::computeApplicableActions(agent))
 {}
 
 MDPProblem::~MDPProblem() {}
