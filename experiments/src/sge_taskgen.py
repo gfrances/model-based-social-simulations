@@ -10,19 +10,12 @@ class SGETaskgen(taskgen.Taskgen):
     """
 
     def print_task(self, lines):
-
-        tpl = Template(load_file('tpl/run-task.sh'))
-        task_code = tpl.substitute(
-            task_options='\n'.join(lines),
-            simulpast_dir=taskgen.SIMULPAST_DIR
-        )
-
         log_dir = self.experiment.directory + '/run'
         mkdirp(log_dir)
 
         task_filename = log_dir + "/run-task.sh"
 
-        write_code(task_code, task_filename)
+        write_code(self.generate_run_task(lines), task_filename)
 
         qsub_line = "qsub -t 1-{noptions} -l h_rt={rt} -l h_cpu={timeout} -l h_vmem={mem}G \\\n\t\t" \
                     " -e  {log_dir} \\\n\t\t -o {log_dir} \\\n\t\t" \

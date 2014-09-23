@@ -1,8 +1,7 @@
 #!/bin/bash
 
 SIMULPAST_DIR=${simulpast_dir}
-
-TASK=$${1:-$$SGE_TASK_ID}
+SIMULPAST_BIN=${simulpast_bin}
 
 if [[ -d $${HOME}/projects/simulpast/pandora-main ]]; then
     # Export both the location of the PANDORA library and that of the local libs, possibly including boost.
@@ -12,6 +11,7 @@ else
     exit 1
 fi
 
+TASK=$${1:-$$SGE_TASK_ID}
 case $${TASK} in
 
 ${task_options}

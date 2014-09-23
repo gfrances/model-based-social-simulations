@@ -11,17 +11,11 @@ class SequentialTaskgen(taskgen.Taskgen):
 
     def print_task(self, lines):
 
-        tpl = Template(load_file('tpl/run-task.sh'))
-        task_code = tpl.substitute(
-            task_options='\n'.join(lines),
-            simulpast_dir=taskgen.SIMULPAST_DIR
-        )
-
         log_dir = self.experiment.directory + '/run'
         mkdirp(log_dir)
 
         task_filename = log_dir + "/run-task.sh"
-        write_code(task_code, task_filename)
+        write_code(self.generate_run_task(lines), task_filename)
 
         runner = Template(load_file('tpl/task-iterator.sh')).substitute(
             nlines=len(lines),
