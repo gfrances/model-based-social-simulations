@@ -7,6 +7,7 @@
 #include <GeneralState.hxx>
 #include <RasterLoader.hxx>
 #include <utils/logging.hxx>
+#include <utils/memory.hxx>
 
 namespace Model 
 {
@@ -54,6 +55,9 @@ void Environment::step() {
 	logMapState();
 	#endif
 	Engine::World::step();
+	
+	// Log memory usage
+	PINFO("memory", "[Timestep: " << getCurrentTimeStep() << "] Current / Peak: " << getCurrentRSS() << " / " << getPeakRSS());
 }
 
 
