@@ -1,12 +1,24 @@
 #
 # Some helper methods
 #
+import glob
 import os
 from os.path import dirname
 import stat
 
 HOMEPATH = os.path.expanduser("~")
 DISTRIBUTION_BASE_DIR = dirname(dirname(dirname(os.path.realpath(__file__))))
+
+
+def get_subdirs(base, pattern='*'):
+    """
+    Return an iterator over pairs of all the (subdirectories, domain_dirname) of the base directory,
+    skipping directories starting with '__'
+    """
+    for full in glob.iglob(base + '/' + pattern):
+        _, last = os.path.split(full)
+        if not last.startswith('__'):
+            yield full, last
 
 
 def mkdirp(directory):
