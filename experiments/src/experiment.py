@@ -155,4 +155,4 @@ class AggregateExperiment(object):
     def dump(self):
         def dumper(o):
             return o.data() if hasattr(o, "data") else o.__dict__
-        return json.dumps(self, default=dumper)
+        return json.dumps(self, default=dumper, sort_keys=True, indent=4)
