@@ -4,6 +4,7 @@
 
 #include <Agent.hxx>
 #include <controllers/AgentController.hxx>
+#include "EnvironmentConfig.hxx"
 #include <string>
 #include <memory>
 
@@ -25,13 +26,10 @@ private:
 	//! Helper to return the agent's world's resource raster, non-const version
 	Engine::DynamicRaster& getResourceRaster();
 	
-	
 	//! Reproduce the agent into two agents.
 	void reproduceAgent();
 	
 public:
-	static const int INITIAL_RESOURCES = 5;
-	static const int REPRODUCTION_THRESHOLD = 50;
 	
 	ModelAgent(unsigned id, const AgentController::cptr controller);
 	ModelAgent(const std::string& id, const AgentController::cptr controller);
@@ -55,11 +53,17 @@ public:
 	
 	//! The resource-consumption at every time step logic for an agent.
 	//! Currently diminishes by one the amount of resources available to the agent.
-	static int dailyResourceConsumption() { return 1; }
+	static int dailyResourceConsumption() { return EnvironmentConfig::getInstance()->getConsumptionFactor(); }
+	
+	//! The amount of resources with which a new agent is born
+	static int initialResources() { return dailyResourceConsumption() * 2; }
+	
+	//! The resource threshold that triggers the reproduction of the agent into two different agents.
+	static int reproductionThreshold() { return dailyResourceConsumption() * 10; }
 	
 	//! The resource-consumption after the reproduction of the agent.
 	//! Currently sets the number of resources to the initial, fixed value.
-	static int consumeResourcesOnReproduction(int resources) { return INITIAL_RESOURCES; }
+	static int consumeResourcesOnReproduction(int resources) { return initialResources(); }
 	
 	//! The death-by-starvation logic for an agent.
 	//! Currently an agent dies at the end of a time step if she is holding a negative amount of resources.
@@ -67,7 +71,7 @@ public:
 	
 	//! The natural reproduction logic for an agent.
 	//! Currently an agent reproduces at the end of a time step if her amount of resource reaches a certain reproduction threshold.
-	static bool checkReproduction(int resources) { return resources >= REPRODUCTION_THRESHOLD; }
+	static bool checkReproduction(int resources) { return resources >= reproductionThreshold(); }
 	
 	//! Accessors for the resources attribute
 	void setResources( int resources ) {_resources = resources; }

@@ -48,6 +48,12 @@ void Environment::addAgent(ModelAgent* agent, bool executedAgent) {
 	PDEBUG("population", "[Timestep: " << getCurrentTimeStep() << "] Agent created: " << *agent);
 }
 
+// We only need to log the event.
+void Environment::removeAgent(ModelAgent* agent) {
+	PDEBUG("population", "[Timestep: " << getCurrentTimeStep() << "] Agent dead: " << *agent);
+}
+
+
 void Environment::step() {
 	// Ugly, but efficient
 	#ifdef PANDORADEBUG

@@ -23,10 +23,10 @@ action_t MDPProblem::number_actions(const MDPState& s) const {
 	return s.getApplicableActions().size();
 }
 
-bool MDPProblem::applicable( const MDPState& s, action_t a ) const { return true; }
+bool MDPProblem::applicable(const MDPState& s, action_t a) const { return true; }
 
 
-float MDPProblem::cost( const MDPState& s, action_t a ) const {
+float MDPProblem::cost(const MDPState& s, action_t a) const {
 	// TODO - Note that this is slightly inefficient and redundant, since this method is always called after MDPProblem::next,
 	// which has already performed the same operations. 
 	

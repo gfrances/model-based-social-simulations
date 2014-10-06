@@ -36,6 +36,7 @@ public:
 	
 	//! Overload the parent class method to add custom logging
 	void addAgent(ModelAgent* agent, bool executedAgent = true);
+	void removeAgent(ModelAgent* agent);
 	
 	//! Overload the parent class method to add custom logging
 	void step();

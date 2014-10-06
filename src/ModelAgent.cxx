@@ -15,7 +15,7 @@ ModelAgent::ModelAgent(unsigned id, const AgentController::cptr controller)
 {}
 
 ModelAgent::ModelAgent(const std::string& id, const AgentController::cptr controller)
-	: Agent(id), _controller(controller), _resources(INITIAL_RESOURCES), _numChildren(0)
+	: Agent(id), _controller(controller), _resources(initialResources()), _numChildren(0)
 {}
 
 
@@ -43,6 +43,7 @@ void ModelAgent::updateState() {
 	// Check for the death of the agent
     if (checkDeathByStarvation(_resources)) {
 		remove();
+		static_cast<Environment *>(getWorld())->removeAgent(this);
 	}
 	
 	// Check for the reproduction of the agent

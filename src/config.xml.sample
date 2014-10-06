@@ -5,6 +5,9 @@
 	<numSteps value="100" serializeResolution="1"/>
 	<size width="50" height="50"/>
     <environment map="../maps/r25_s50x50.tif"/>
+	
+	<!-- A consumption factor of X means that each agent consumes per timestep X times the amount of resources that grows at each cell each timestep -->
+	<resource consumptionFactor="10" />
     
 	<agents>
 		

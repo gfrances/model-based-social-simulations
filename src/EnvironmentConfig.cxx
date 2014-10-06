@@ -7,7 +7,10 @@
 
 namespace Model
 {
-	
+
+// Definition of the static variable.
+EnvironmentConfig* EnvironmentConfig::_instance;
+
 const std::vector<std::string> EnvironmentConfig::ALLOWED_CONTROLLERS = {"MDP", "random", "motionless", "lazy", "greedy", "rule"};
 
 EnvironmentConfig::EnvironmentConfig(const std::string& filename) : 
@@ -25,6 +28,8 @@ void EnvironmentConfig::loadParams() {
 	// The map size
 	_size._width = getParamInt("size", "width");
 	_size._height = getParamInt("size", "height");
+	
+	_consumptionFactor = getParamFloat("resource", "consumptionFactor");
 	
 	// The map raster file
 	map = getParamStr("environment", "map");
