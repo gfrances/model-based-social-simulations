@@ -13,10 +13,11 @@ def main():
     """
     exp = AggregateExperiment(parse_arguments())
 
-    for width in [100, 500, 1000]:
+    for width in [100, 500, 1000, 5000, 10000]:
         agent = MDPAgentConfiguration(population=10, horizon=10, width=width)
         exp.add_single(SingleExperiment(timesteps=200, runs=5,
                                         simulation_map='r25_s50x50',
+                                        consumption_factor=3,
                                         label="width_{}".format(width),
                                         agents=[agent]))
 

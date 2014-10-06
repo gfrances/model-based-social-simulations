@@ -47,6 +47,7 @@ def parse_arguments():
 
 def main():
     args = parse_arguments()
+
     experiment_dir = EXPERIMENTS_BASE_DIR + '/' + args.dir
 
     for width, run, csv in iterate(experiment_dir, args.csv):

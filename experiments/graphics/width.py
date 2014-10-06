@@ -4,13 +4,15 @@
 
 import argparse
 from collections import defaultdict
-
 import matplotlib.pyplot as plt
+import sys
+
+sys.path.append('..')
 
 from analyser import EXPERIMENTS_BASE_DIR, iterate
 from graphics.lib import utils
 from graphics.lib.graphicsHelper import get_stylecycler, save_figure
-from helper import mkdirp
+from src.helper import mkdirp
 
 
 AGENT_TYPES = {
@@ -52,6 +54,7 @@ def load_data(experiment_dir, csv):
         w = int(width[6:])
         r = int(run[4:])
         print(width, w, run, r, csv)
+
         data = load_csv_data(csv + '/agent-mdp.csv')
 
         if data is not None:
@@ -74,14 +77,17 @@ def plot_data(data, output_dir):
     stylecycler = get_stylecycler()
 
     widths = sorted(data.keys())
+    xmax, ymax = 0, 0
     for width in widths:
         style = next(stylecycler)
         values = data[width]
         plt.plot(range(0, values.size), values, style, label='w={}'.format(width))
+        xmax = max(xmax, values.size)
+        ymax = max(ymax, max(values))
 
     #plt.legend(loc=2,bbox_to_anchor=(0., 1.02, 1., .102))
     plt.legend(loc=2)
-    plt.axis([0, 100, 0, 300])  # [xmin, xmax, ymin, ymax]
+    plt.axis([0, xmax + 10, 0, ymax + 10])  # [xmin, xmax, ymin, ymax]
     #plt.xticks(sizes, sizes, size='small')
     plt.ylabel('Population')
     plt.xlabel('Time steps')
