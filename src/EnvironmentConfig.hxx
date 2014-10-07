@@ -42,6 +42,7 @@ protected:
 	std::string _logdir;
 	std::vector<ControllerConfig> _controllers;
 	float _consumptionFactor;
+	bool _agentReproduction;
 	
 	//! Loads the configurations for all the agents controllers
 	void loadControllerParams();
@@ -61,6 +62,8 @@ public:
 	const Engine::Size<int>& getSize() const { return _size; };
 	
 	float getConsumptionFactor() const { return _consumptionFactor; }
+	
+	bool doAgentsReproduce() const { return _agentReproduction; }
 	
 	const std::string& getMap() const { return map; }
 	

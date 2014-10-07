@@ -71,7 +71,10 @@ public:
 	
 	//! The natural reproduction logic for an agent.
 	//! Currently an agent reproduces at the end of a time step if her amount of resource reaches a certain reproduction threshold.
-	static bool checkReproduction(int resources) { return resources >= reproductionThreshold(); }
+	static bool checkReproduction(int resources) { 
+		if (!EnvironmentConfig::getInstance()->doAgentsReproduce()) return false;
+		return resources >= reproductionThreshold();
+	}
 	
 	//! Accessors for the resources attribute
 	void setResources( int resources ) {_resources = resources; }

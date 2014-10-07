@@ -31,6 +31,8 @@ void EnvironmentConfig::loadParams() {
 	
 	_consumptionFactor = getParamFloat("resource", "consumptionFactor");
 	
+	_agentReproduction = getParamBool("agents", "reproduction");
+	
 	// The map raster file
 	map = getParamStr("environment", "map");
 	

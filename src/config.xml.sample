@@ -9,7 +9,8 @@
 	<!-- A consumption factor of X means that each agent consumes per timestep X times the amount of resources that grows at each cell each timestep -->
 	<resource consumptionFactor="10" />
     
-	<agents>
+	<!-- the boolean repoeduction attribute tells whether agents reproduce or only die -->
+	<agents reproduction="false"> 	
 		
 		<!-- We currently accept the following controller types: 
 				MDP, random, motionless, lazy, greedy, rule
