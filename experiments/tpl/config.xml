@@ -9,7 +9,7 @@
     <resource consumptionFactor="${consumption_factor}" />
 
     <!-- Agent configuration parameters -->
-    <agents reproduction="${agent_reproduction}">
+    <agents reproduction="${agent_reproduction}" position="${agent_position}">
         ${agent_config}
     </agents>
 </config>

@@ -89,7 +89,7 @@ def plot_data(data, output_dir):
     plt.legend(loc=2)
     plt.axis([0, xmax + 10, 0, ymax + 10])  # [xmin, xmax, ymin, ymax]
     #plt.xticks(sizes, sizes, size='small')
-    plt.ylabel('Population')
+    plt.ylabel('Resource units')
     plt.xlabel('Time steps')
 
     save_figure(output_dir, 'population-dynamics{}'.format(''))

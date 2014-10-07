@@ -19,6 +19,7 @@ def main():
                                         simulation_map='r25_s50x50',
                                         consumption_factor=3,
                                         agent_reproduction=True,
+                                        agent_position="",  # random position
                                         label="width_{}".format(width),
                                         agents=[agent]))
 
