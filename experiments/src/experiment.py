@@ -75,10 +75,11 @@ class SingleExperiment(object):
     A single experiment is an experiment with one single configuration file, but that might have several runs.
     """
 
-    def __init__(self, timesteps, simulation_map, consumption_factor, label, runs, agents=None):
+    def __init__(self, timesteps, simulation_map, consumption_factor, agent_reproduction, label, runs, agents=None):
         self.timesteps = timesteps
         self.map = MAPS_DIR + '/' + simulation_map + '.tif'
         self.consumption_factor = consumption_factor
+        self.agent_reproduction = agent_reproduction
         self.runs = runs
         self.agents = agents if agents else []
         self.label = label
@@ -116,7 +117,8 @@ class SingleExperiment(object):
         return tpl.substitute(
             timesteps=self.timesteps,
             map=self.map,
-            consumptionFactor=self.consumption_factor,
+            consumption_factor=self.consumption_factor,
+            agent_reproduction="1" if self.agent_reproduction else "0",
             output=output,
             logs=logs,
             agent_config='\n\t\t'.join(agent.generate_config() for agent in self.agents)

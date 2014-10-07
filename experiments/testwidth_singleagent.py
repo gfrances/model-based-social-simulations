@@ -15,10 +15,10 @@ def main():
 
     for width in [100, 500, 1000, 5000, 10000]:
         agent = MDPAgentConfiguration(population=10, horizon=10, width=width)
-        exp.add_single(SingleExperiment(timesteps=200, runs=5,
+        exp.add_single(SingleExperiment(timesteps=1000, runs=5,
                                         simulation_map='r25_s50x50',
-                                        consumption_factor=3,
-                                        agent_reproduction=True,
+                                        consumption_factor=4,
+                                        agent_reproduction=False,
                                         label="width_{}".format(width),
                                         agents=[agent]))
 
@@ -30,8 +30,8 @@ def main():
 
 def parse_arguments():
     opt = Options()
-    opt.name = "width"
-    opt.timeout = 6*3600
+    opt.name = "width_sa"
+    opt.timeout = 1*3600
     opt.mem = 8
     return opt
 

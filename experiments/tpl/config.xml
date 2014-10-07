@@ -6,10 +6,10 @@
 	<size width="50" height="50"/>
     <environment map="${map}"/>
 
-    <resource consumptionFactor="${consumptionFactor}" />
+    <resource consumptionFactor="${consumption_factor}" />
 
     <!-- Agent configuration parameters -->
-    <agents>
+    <agents reproduction="${agent_reproduction}">
         ${agent_config}
     </agents>
 </config>
