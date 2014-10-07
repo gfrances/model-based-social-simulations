@@ -9,7 +9,7 @@
 namespace Model 
 {
 
-class ModelAgent; class ControllerConfig;
+class Environment; class ModelAgent; class ControllerConfig;
 
 class AgentFactory
 {
@@ -28,8 +28,8 @@ public:
 	
 	
 	//! Simply create a controller of the type specified in the configuration and inject it to the agent.
-	ModelAgent* createAgent(unsigned id, const std::string& type) const;
-	ModelAgent* createAgent(const std::string id, const std::string& type) const;
+	ModelAgent* createAgent(unsigned id, Environment* world, const std::string& type) const;
+	ModelAgent* createAgent(const std::string id, Environment* world, const std::string& type) const;
 	
 	
 protected:

@@ -10,6 +10,7 @@
 #include "controllers/GreedyController.hxx"
 #include "controllers/RuleBasedController.hxx"
 #include "controllers/RandomController.hxx"
+#include <Environment.hxx>
 #include <memory>
 
 namespace Model 
@@ -22,8 +23,8 @@ void AgentFactory::registerControllerType(const ControllerConfig& config) {
 }
 	
 	
-ModelAgent* AgentFactory::createAgent(unsigned id, const std::string& type) const { return new ModelAgent(id, getController(type)); }
-ModelAgent* AgentFactory::createAgent(const std::string id, const std::string& type) const { return new ModelAgent(id, getController(type)); }
+ModelAgent* AgentFactory::createAgent(unsigned id, Environment* world, const std::string& type) const { return new ModelAgent(id, world, getController(type)); }
+ModelAgent* AgentFactory::createAgent(const std::string id, Environment* world, const std::string& type) const { return new ModelAgent(id, world, getController(type)); }
 	
 	
 void AgentFactory::createController(const ControllerConfig& config) {

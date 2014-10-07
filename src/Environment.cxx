@@ -27,16 +27,24 @@ void Environment::createRasters() {
 }
 
 void Environment::createAgents() {
+	const auto modelConfig = getModelConfig();
 	unsigned id = 1;
-	for (const ControllerConfig& config:getModelConfig()->getControllerConfigurations()) {
+	for (const ControllerConfig& config:modelConfig->getControllerConfigurations()) {
 		agentFactory.registerControllerType(config);
 		
 		for(unsigned i = 0; i < config.getPopulation(); i++)
 		{
 			if((id % getNumTasks()) == (unsigned) getId()) {
-				ModelAgent* agent = agentFactory.createAgent(id, config.getType());
+				ModelAgent* agent = agentFactory.createAgent(id, this, config.getType());
 				addAgent(agent);
-				agent->setRandomPosition();
+				
+				// Set the agent initial position
+				const auto position = modelConfig->getInitialAgentPosition();
+				if (position) {
+					agent->setPosition(*position);
+				} else { // If no fixed position was specified in the config file, we set a random position.
+					agent->setRandomPosition();
+				}
 			}
 			++id;
 		}

@@ -7,6 +7,7 @@
 #include <Config.hxx>
 #include <Size.hxx>
 #include <Exception.hxx>
+#include <Point2D.hxx>
 
 namespace Model
 {
@@ -33,6 +34,7 @@ class EnvironmentConfig : public Engine::Config
 {
 public:
 	typedef std::shared_ptr<const EnvironmentConfig> cptr;
+	typedef std::shared_ptr<Engine::Point2D<int>> PointPtr;
 	
 protected:
 	static const std::vector<std::string> ALLOWED_CONTROLLERS;
@@ -43,12 +45,16 @@ protected:
 	std::vector<ControllerConfig> _controllers;
 	float _consumptionFactor;
 	bool _agentReproduction;
+	PointPtr _initialAgentPosition;
 	
 	//! Loads the configurations for all the agents controllers
 	void loadControllerParams();
 	
 	//! Loads the particular configuration of a single controller
 	void loadSingleControllerConfig(TiXmlElement* element);
+	
+	//! Parses the (optional) initial position of the agents
+	PointPtr parseInitialPosition();
 	
 public:
 	
@@ -62,6 +68,8 @@ public:
 	float getConsumptionFactor() const { return _consumptionFactor; }
 	
 	bool doAgentsReproduce() const { return _agentReproduction; }
+	
+	const PointPtr getInitialAgentPosition() const { return _initialAgentPosition; }
 	
 	const std::string& getMap() const { return map; }
 	

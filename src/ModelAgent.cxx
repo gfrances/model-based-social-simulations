@@ -10,13 +10,18 @@
 namespace Model
 {
 
-ModelAgent::ModelAgent(unsigned id, const AgentController::cptr controller)
-	: ModelAgent("ModelAgent_" + std::to_string(id), controller)
+ModelAgent::ModelAgent(unsigned id, Environment* world, const AgentController::cptr controller)
+	: ModelAgent("ModelAgent_" + std::to_string(id), world, controller)
 {}
 
-ModelAgent::ModelAgent(const std::string& id, const AgentController::cptr controller)
-	: Agent(id), _controller(controller), _resources(initialResources()), _numChildren(0)
-{}
+ModelAgent::ModelAgent(const std::string& id, Environment* world, const AgentController::cptr controller)
+	: Agent(id), _controller(controller), _numChildren(0)
+{
+	setWorld(world);
+	
+	// We can only set the resources here, since initialResources depends on the world being initialized:
+	_resources = initialResources();
+}
 
 
 ModelAgent::~ModelAgent() {}
@@ -60,10 +65,12 @@ void ModelAgent::reproduceAgent() {
 	
 	PDEBUG("population", *this << " gives birth to agent " << id);
 	
-	ModelAgent* child = new ModelAgent(id, getController()); // We reuse the same controller
+	Environment* world = static_cast<Environment *>(getWorld());
+	
+	ModelAgent* child = new ModelAgent(id, world, getController()); // We reuse the same controller
 	child->setPosition(getPosition()); // The new agent starts at the same position
 	
-	static_cast<Environment *>(getWorld())->addAgent(child); // Add the agent to the world
+	world->addAgent(child); // Add the agent to the world
 	
 	// And reduce the number of resources of the current agent
 	_resources = consumeResourcesOnReproduction(_resources);

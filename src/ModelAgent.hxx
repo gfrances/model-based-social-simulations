@@ -12,7 +12,7 @@
 namespace Model
 {
 
-class MDPRaster;
+class MDPRaster; class Environment;
 	
 class ModelAgent : public Engine::Agent
 {
@@ -37,8 +37,8 @@ private:
 	
 public:
 	
-	ModelAgent(unsigned id, const AgentController::cptr controller);
-	ModelAgent(const std::string& id, const AgentController::cptr controller);
+	ModelAgent(unsigned id, Environment* world, const AgentController::cptr controller);
+	ModelAgent(const std::string& id, Environment* world, const AgentController::cptr controller);
 	
 	virtual ~ModelAgent();
 	
