@@ -62,10 +62,10 @@ public:
 	int dailyResourceConsumption() const { return getConfiguration().getConsumptionFactor(); }
 	
 	//! The amount of resources with which a new agent is born
-	int initialResources() const { return dailyResourceConsumption() * 2; }
+	int initialResources() const { return dailyResourceConsumption() * 5; }
 	
 	//! The resource threshold that triggers the reproduction of the agent into two different agents.
-	int reproductionThreshold() const { return dailyResourceConsumption() * 10; }
+	int reproductionThreshold() const { return dailyResourceConsumption() * 20; }
 	
 	//! The resource-consumption after the reproduction of the agent.
 	//! Currently sets the number of resources to the initial, fixed value.
