@@ -64,8 +64,8 @@ void MDPProblem::next(const MDPState& s, action_t a, OutcomeVector& outcomes) co
 	// 6. Check for the reproduction of the agent - Note that we do not actually reproduce the agent,
 	// only reduce the amount of resources, but this does not affect the cost, as we do not want to 
 	// induce the agent not to reproduce.
-    if (ModelAgent::checkReproduction(resources)) {
-		resources = ModelAgent::consumeResourcesOnReproduction(resources);
+    if (_agent.checkReproduction(resources)) {
+		resources = _agent.consumeResourcesOnReproduction(resources);
 	}
 	
 

@@ -8,9 +8,6 @@
 namespace Model
 {
 
-// Definition of the static variable.
-EnvironmentConfig* EnvironmentConfig::_instance;
-
 const std::vector<std::string> EnvironmentConfig::ALLOWED_CONTROLLERS = {"MDP", "random", "motionless", "lazy", "greedy", "rule"};
 
 EnvironmentConfig::EnvironmentConfig(const std::string& filename) : 

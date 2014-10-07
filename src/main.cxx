@@ -17,7 +17,7 @@ int main(int argc, char *argv[])
 	std::string configFile(argc != 1 ? argv[1] : "config.xml");
 
 	// Load the configuration file
-	Model::EnvironmentConfig* config = Model::EnvironmentConfig::initialize(configFile);
+	Model::EnvironmentConfig* config = new Model::EnvironmentConfig(configFile);
 	
 	// omp_set_num_threads(2);
 	
