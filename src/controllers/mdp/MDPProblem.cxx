@@ -35,7 +35,8 @@ float MDPProblem::cost(const MDPState& s, action_t a) const {
 	int availableResources = s.getResourceRaster().at(position);
 	
 	int maximumAttainable = s.getAgentResources() + availableResources;
-	return maximumAttainable > 0 ? 10.0 / (float) maximumAttainable : 100;
+	int dailyConsumption = _agent.dailyResourceConsumption();
+	return maximumAttainable > dailyConsumption ? 100.0 / (float) maximumAttainable : 1000;
 }
 
 void MDPProblem::next(const MDPState& s, action_t a, OutcomeVector& outcomes) const {
