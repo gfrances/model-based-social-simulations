@@ -14,15 +14,15 @@ def main():
     """
     exp = AggregateExperiment(parse_arguments())
 
-    runs = 20
+    runs = 50
     for run in range(0, runs):
         x, y = randint(0, 49), randint(0, 49)
         initial_position = "{},{}".format(x, y)
 
         for width in [10, 50, 100, 200, 500, 1000, 5000, 10000]:
-            agent = MDPAgentConfiguration(population=10, horizon=10, width=width)
+            agent = MDPAgentConfiguration(population=1, horizon=10, width=width)
 
-            exp.add_single(SingleExperiment(timesteps=200, runs=20,
+            exp.add_single(SingleExperiment(timesteps=200, runs=1,
                                             simulation_map='r25_s50x50',
                                             consumption_factor=2,
                                             agent_reproduction=False,
