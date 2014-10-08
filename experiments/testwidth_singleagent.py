@@ -4,6 +4,7 @@ import argparse
 
 from src.experiment import AggregateExperiment, MDPAgentConfiguration, SingleExperiment
 from src.sge_taskgen import SGETaskgen
+from random import randint
 
 
 def main():
@@ -13,15 +14,21 @@ def main():
     """
     exp = AggregateExperiment(parse_arguments())
 
-    for width in [100, 500, 1000, 5000, 10000]:
-        agent = MDPAgentConfiguration(population=10, horizon=10, width=width)
-        exp.add_single(SingleExperiment(timesteps=1000, runs=5,
-                                        simulation_map='r25_s50x50',
-                                        consumption_factor=4,
-                                        agent_reproduction=False,
-                                        agent_position="25,25",
-                                        label="width_{}".format(width),
-                                        agents=[agent]))
+    runs = 20
+    for run in range(0, runs):
+        x, y = randint(0, 49), randint(0, 49)
+        initial_position = "{},{}".format(x, y)
+
+        for width in [10, 50, 100, 200, 500, 1000, 5000, 10000]:
+            agent = MDPAgentConfiguration(population=10, horizon=10, width=width)
+
+            exp.add_single(SingleExperiment(timesteps=200, runs=20,
+                                            simulation_map='r25_s50x50',
+                                            consumption_factor=2,
+                                            agent_reproduction=False,
+                                            agent_position=initial_position,
+                                            label="width_{}_run_{}".format(width, run),
+                                            agents=[agent]))
 
     exp.bootstrap()
 
