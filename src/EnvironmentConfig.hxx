@@ -25,7 +25,7 @@ public:
 	const std::string& getType() const { return type; }
 	unsigned getWidth() const { return width; }
 	unsigned getHorizon() const { return horizon; }
-	unsigned getExplorationBonus() const { return explorationBonus; }
+	float getExplorationBonus() const { return explorationBonus; }
 	unsigned getPopulation() const { return population; }
 };
 

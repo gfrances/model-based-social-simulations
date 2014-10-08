@@ -69,7 +69,9 @@ void EnvironmentConfig::loadSingleControllerConfig(TiXmlElement* element) {
  	if (config.type == "MDP") {
 		config.horizon = getParamUnsignedFromElem(element, "horizon");
 		config.width = getParamUnsignedFromElem(element, "width");
-		config.explorationBonus = getParamUnsignedFromElem(element, "explorationBonus");		
+		config.explorationBonus = getParamFloatFromElem(element, "explorationBonus");
+		
+		config.explorationBonus = -1 * abs(config.explorationBonus); // the exploration bonus needs to be negative for cost-based (as opposed to reward-based) MDPs.
  	} else if (config.type == "lazy") {
 		config.alpha = getParamFloatFromElem(element, "alpha");
 	}

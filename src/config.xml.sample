@@ -13,9 +13,8 @@
 	<!-- the `position` attribute forces a fixed initial position for all agents. Leave it empty for a random position -->
 	<agents reproduction="false" position=""> 
 		
-		<!-- We currently accept the following controller types: 
-				MDP, random, motionless, lazy, greedy, rule
-		-->
+		<!-- We currently accept the following controller types: MDP, random, motionless, lazy, greedy, rule -->
+		
 		<controller type= "MDP"
 			population="10"
 			horizon="10"
