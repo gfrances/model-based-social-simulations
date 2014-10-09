@@ -26,16 +26,22 @@ public:
 		const Engine::DynamicRaster& raster = agent.getResourceRaster();
 		
 		// We start by assuming that the best option is the no-move action
-		unsigned best_idx = 0;
-		int max = raster.getValue(current);
+		unsigned best_idx = 0,
+				 num_directions = MoveAction::DIRECTIONS.size();
+		int max = -1;
 		
-		// Note that we skip the first element, the "no-move" direction that we have already processed.
-		for (unsigned i = 1; i < MoveAction::DIRECTIONS.size(); ++i) {
-			const Engine::Point2D<int> point = current + MoveAction::DIRECTIONS[i];
+		// Shuffle the possible directions to introduce more diversity
+		std::vector<unsigned> indexes(num_directions);
+		std::iota(std::begin(indexes), std::end(indexes), 0); // fill the index vector with the range [0..num_directions-1]
+		std::random_shuffle(indexes.begin(), indexes.end());
+		
+		for (unsigned idx:indexes) {
+			const Engine::Point2D<int> point = current + MoveAction::DIRECTIONS[idx];
 			if (world->checkPosition(point)) {
-				if (int res = raster.getValue(point) > max) {
+				int res = raster.getValue(point);
+				if (res > max) {
 					max = res;
-					best_idx = i;
+					best_idx = idx;
 				}
 			}
 		}
