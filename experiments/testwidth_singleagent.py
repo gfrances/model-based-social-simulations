@@ -23,7 +23,7 @@ def main():
             agent = MDPAgentConfiguration(population=1, horizon=10, width=width)
 
             exp.add_single(SingleExperiment(timesteps=200, runs=1,
-                                            simulation_map='r25_s50x50',
+                                            simulation_map='r25_i0',
                                             consumption_factor=2,
                                             agent_reproduction=False,
                                             agent_position=initial_position,

@@ -21,7 +21,7 @@ def main():
     greedy = GreedyAgentConfiguration(population=pop)
     motionless = MotionlessAgentConfiguration(population=pop)
 
-    exp.add_single(SingleExperiment(timesteps=200, runs=1, simulation_map='r25_s50x50',
+    exp.add_single(SingleExperiment(timesteps=200, runs=1, simulation_map='r25_i0',
                                     label="all", agents=[mdp, lazy, random, greedy, motionless]))
 
     exp.bootstrap()

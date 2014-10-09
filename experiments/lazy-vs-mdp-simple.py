@@ -16,7 +16,7 @@ def main():
     mdp_agent = MDPAgentConfiguration(population=10, horizon=6, width=1000)
     lazy_agent = LazyAgentConfiguration(population=10, alpha=0.7)
 
-    exp.add_single(SingleExperiment(timesteps=200, runs=1, simulation_map='r25_s50x50',
+    exp.add_single(SingleExperiment(timesteps=200, runs=1, simulation_map='r25_i0',
                                     label="all", agents=[mdp_agent, lazy_agent]))
 
     exp.bootstrap()

@@ -18,7 +18,7 @@ def main():
     for width in range(200, 1000, 200):
         agent = MDPAgentConfiguration(population=10, horizon=10, width=width)
         exp.add_single(SingleExperiment(timesteps=100, runs=5,
-                                        simulation_map='r25_s50x50',
+                                        simulation_map='r25_i0',
                                         label="width_{}".format(width),
                                         agents=[agent]))
 
