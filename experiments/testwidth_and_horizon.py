@@ -24,8 +24,9 @@ def main():
 
         # The random agent baseline
         random = RandomAgentConfiguration(population=1)
+        label = make_filename(agent='random', run=run)
         exp.add_single(SingleExperiment(agents=[random],
-                                        label="random_run_{}".format(run),
+                                        label=label,
                                         **base_params))
 
         for horizon in [2, 4, 6, 8]:

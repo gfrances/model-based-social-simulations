@@ -10,7 +10,7 @@ from random import randint
 def main():
     """
     This is a simple example: an experiment executing a number of simulations with homogeneous MDP agents,
-    each batch of a few runs with a the same horizon but different width.
+    each batch of a few runs with the same horizon but different width.
     """
     exp = AggregateExperiment(parse_arguments())
 

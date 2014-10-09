@@ -55,6 +55,31 @@ def write_code(code, filename):
 
 def make_filename(**kwargs):
     keys = sorted(kwargs.keys())
+    assert not any('_' in k for k in keys), "Underscores not allowed in parameter key names"
     return '.'.join('{}_{}'.format(k, kwargs[k]) for k in keys)
 
+
+def parse_filename(name):
+
+    # Temporary hack
+    if 'random_run' in name:
+        return {'agent': 'random', 'run': int(name[11:])}
+
+    parameters = name.split('.')
+    d = {}
+    for param in parameters:
+        key_value = param.split('_')
+        assert len(key_value) == 2, "Wrong filename format: {}".format(param)
+        d[key_value[0]] = key_value[1]
+    return d
+
+
+def label_from_parameters(parameters):
+    d = dict(parameters)
+    if d['agent'] == 'random':
+        return 'random'
+    elif d['agent'] == 'mdp':
+        return 'mdp<h={},w={}>'.format(d['horizon'], d['width'])
+    else:
+        assert False, "TO DO"
 

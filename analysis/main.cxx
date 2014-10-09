@@ -19,22 +19,23 @@
 int main(int argc, char *argv[])
 {
 // 	if(argc!=4) throw Engine::Exception("USAGE: analysis file.h5 agent.csv rasters.csv");
-	if(argc != 2) throw Engine::Exception("USAGE: ./analysis.bin file.h5");
+	if(argc != 3) throw Engine::Exception("USAGE: ./analysis.bin file.h5 output_dir");
 
 	Engine::SimulationRecord simRecord(1, false);
 	simRecord.loadHDF5(argv[1], true, true);
 
 	// Process the agent data
 	PostProcess::GlobalAgentStats agentResults;
-	agentResults.addAnalysis(std::make_shared<PostProcess::AgentNum>());
+// 	agentResults.addAnalysis(std::make_shared<PostProcess::AgentNum>());
 	agentResults.addAnalysis(std::make_shared<PostProcess::AgentMean>("resources"));
-	agentResults.addAnalysis(std::make_shared<PostProcess::AgentStdDev>("resources"));
-	agentResults.addAnalysis(std::make_shared<PostProcess::AgentSum>("resources"));
-	agentResults.addAnalysis(std::make_shared<PostProcess::AgentMean>("children"));
+// 	agentResults.addAnalysis(std::make_shared<PostProcess::AgentStdDev>("resources"));
+// 	agentResults.addAnalysis(std::make_shared<PostProcess::AgentSum>("resources"));
+// 	agentResults.addAnalysis(std::make_shared<PostProcess::AgentMean>("children"));
 	
-	const std::vector<std::string> TYPES = {"all", "mdp", "random"};
+// 	const std::vector<std::string> TYPES = {"all", "mdp", "random"};
+	const std::vector<std::string> TYPES = {"mdp", "random"};
 	for (const auto& type:TYPES) {
-		std::string output("agent-" + type + ".csv");
+		std::string output(std::string(argv[2]) + "/agent-" + type + ".csv");
 		agentResults.apply(simRecord, output, type);
 	}
 	

@@ -4,6 +4,7 @@
 
 import argparse
 from collections import defaultdict
+from matplotlib.font_manager import FontProperties
 import matplotlib.pyplot as plt
 import sys
 
@@ -12,7 +13,7 @@ sys.path.append('..')
 from analyser import EXPERIMENTS_BASE_DIR, iterate
 from graphics.lib import utils
 from graphics.lib.graphicsHelper import get_stylecycler, save_figure
-from src.helper import mkdirp
+from src.helper import mkdirp, parse_filename, label_from_parameters
 
 
 AGENT_TYPES = {
@@ -45,26 +46,40 @@ def check_runs(runs_per_width):
         print("WARNING: NOT ALL WIDTHS HAVE THE SAME NUMBER OF RUNS. RUNS PER WIDTH: {}".format(runs_per_width))
 
 
+def average_data(results):
+    aggregated = {}
+    runs = defaultdict(int)
+
+    for p, data in results.items():
+        params = dict(p)  # Convert from frozen set back to a dictionary
+        assert 'run' in params, "The experiment configuration object needs to have a run ID"
+        del params['run']
+        clean = frozenset(params.items())
+        runs[clean] += 1
+        aggregated[clean] = data if clean not in aggregated else aggregated[clean] + data
+
+    check_runs(runs)
+
+    return {params: d / runs[params] for params, d in aggregated.items()}
+
+
 def load_data(experiment_dir, csv):
 
     results = dict()
-    runs_per_width = defaultdict(int)
 
-    for width, run, csv in iterate(experiment_dir, csv):
-        w = int(width[6:])
-        r = int(run[4:])
-        print(width, w, run, r, csv)
+    for parameter_string, run, csv in iterate(experiment_dir, csv):
+        params = parse_filename(parameter_string)
+        hashable_params = frozenset(params.items())
 
-        data = load_csv_data(csv + '/agent-mdp.csv')
+        assert not hashable_params in results, "results already defined for parameters {}".format(hashable_params)
 
+        data = load_csv_data(csv + '/agent-{}.csv'.format(params['agent']))
         if data is not None:
-            results[w] = data if w not in results else results[w] + data
-            runs_per_width[w] += 1
-
-    check_runs(runs_per_width)
+            results[hashable_params] = data
 
     # Average the data:
-    avg_data = {width: d / runs_per_width[width] for width, d in results.items()}
+    avg_data = average_data(results)
+
     return avg_data
 
 
@@ -76,17 +91,22 @@ def load_csv_data(csv_file):
 def plot_data(data, output_dir):
     stylecycler = get_stylecycler()
 
-    widths = sorted(data.keys())
+    params = sorted(data.keys())
     xmax, ymax = 0, 0
-    for width in widths:
+    for param in params:
         style = next(stylecycler)
-        values = data[width]
-        plt.plot(range(0, values.size), values, style, label='w={}'.format(width))
+        values = data[param]
+        label = label_from_parameters(param)
+        plt.plot(range(0, values.size), values, style, label=label)
         xmax = max(xmax, values.size)
         ymax = max(ymax, max(values))
 
+    font = FontProperties()
+    font.set_size(8)
+    # legend([plot1], "title", prop = fontP)
+
     #plt.legend(loc=2,bbox_to_anchor=(0., 1.02, 1., .102))
-    plt.legend(loc=2)
+    plt.legend(loc=2, prop=font)
     plt.axis([0, xmax + 10, 0, ymax + 10])  # [xmin, xmax, ymin, ymax]
     #plt.xticks(sizes, sizes, size='small')
     plt.ylabel('Resource units')
