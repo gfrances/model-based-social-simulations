@@ -51,3 +51,10 @@ def write_code(code, filename):
     with open(filename, "w") as f:
         f.write(code)
     make_executable(filename)
+
+
+def make_filename(**kwargs):
+    keys = sorted(kwargs.keys())
+    return '.'.join('{}_{}'.format(k, kwargs[k]) for k in keys)
+
+
