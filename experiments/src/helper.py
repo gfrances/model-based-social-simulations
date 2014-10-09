@@ -79,7 +79,14 @@ def label_from_parameters(parameters):
     if d['agent'] == 'random':
         return 'random'
     elif d['agent'] == 'mdp':
-        return 'mdp<h={},w={}>'.format(d['horizon'], d['width'])
+        if 'horizon' in d and 'width' in d:
+            return 'mdp[h={},w={}]'.format(d['horizon'], d['width'])
+        elif 'horizon' in d:
+            return 'mdp[h={}]'.format(d['horizon'])
+        elif 'width' in d:
+            return 'mdp[w={}]'.format(d['width'])
+        else:
+            return 'mdp'
     else:
         assert False, "TO DO"
 

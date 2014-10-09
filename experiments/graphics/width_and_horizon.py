@@ -6,6 +6,7 @@ import argparse
 from collections import defaultdict
 from matplotlib.font_manager import FontProperties
 import matplotlib.pyplot as plt
+import numpy as np
 import sys
 
 sys.path.append('..')
@@ -88,27 +89,79 @@ def load_csv_data(csv_file):
     return res if res.size != 1 else None
 
 
+class Dataset(object):
+    def __init__(self):
+        self.data = {}
+
+
+def filter_results(data, filter_keys=True, **kwargs):
+    filtered = {}
+    for k, v in data.items():
+        params = dict(k)
+        if all(key in params and params[key] == str(value) for key, value in kwargs.items()):
+            if filter_keys:
+                k = k.difference(frozenset(kwargs.items()))
+            filtered[k] = v
+    return filtered
+
+
 def plot_data(data, output_dir):
-    stylecycler = get_stylecycler()
 
-    params = sorted(data.keys())
-    xmax, ymax = 0, 0
-    for param in params:
-        style = next(stylecycler)
-        values = data[param]
-        label = label_from_parameters(param)
-        plt.plot(range(0, values.size), values, style, label=label)
-        xmax = max(xmax, values.size)
-        ymax = max(ymax, max(values))
+    horizons = ['2', '4', '6', '8']
+    fig, axes = plt.subplots(2, 2, sharey=True)
+    plt.subplots_adjust(hspace=0.3)
+    fig.tight_layout()
 
-    font = FontProperties()
-    font.set_size(8)
-    # legend([plot1], "title", prop = fontP)
+    random_data = filter_results(data, agent='random', filter_keys=False)
+    assert len(random_data) == 1
+    random_values = list(random_data.values())[0]
 
-    #plt.legend(loc=2,bbox_to_anchor=(0., 1.02, 1., .102))
-    plt.legend(loc=2, prop=font)
-    plt.axis([0, xmax + 10, 0, ymax + 10])  # [xmin, xmax, ymin, ymax]
+    axes = axes.ravel()
+    for index, h in enumerate(horizons):
+        stylecycler = get_stylecycler()
+
+        axes[index].plot(range(0, random_values.size),
+                         random_values, next(stylecycler), label=label_from_parameters({'agent': 'random'}))
+
+        filtered = filter_results(data, horizon=h)
+        params = sorted(filtered.keys(), key=lambda x: int(dict(x)['width']))
+        for param in params:
+            style = next(stylecycler)
+            values = filtered[param]
+            axes[index].plot(range(0, values.size), values, style, label=label_from_parameters(param))
+
+            #plt.legend(loc=2,bbox_to_anchor=(0., 1.02, 1., .102))
+            axes[index].legend(loc=2, fontsize=8)
+
+            axes[index].set_title('horizon={}'.format(h), fontsize=10)
+            # We change the fontsize of minor ticks label
+            axes[index].tick_params(axis='both', which='major', labelsize=8)
+            axes[index].tick_params(axis='both', which='minor', labelsize=8)
+
+            # plt.ylabel('Resource units')
+            # plt.xlabel('Time steps')
+
+    axes[0].set_ylabel('Resource units', fontsize=10)
+    axes[2].set_ylabel('Resource units', fontsize=10)
+    axes[2].set_xlabel('Time steps', fontsize=10)
+    axes[3].set_xlabel('Time steps', fontsize=10)
+
+    # params = sorted(data.keys())
+    # xmax, ymax = 0, 0
+    # for param in params:
+    #     style = next(stylecycler)
+    #     values = data[param]
+    #     label = label_from_parameters(param)
+    #     plt.plot(range(0, values.size), values, style, label=label)
+    #     xmax = max(xmax, values.size)
+    #     ymax = max(ymax, max(values))
+
+    # plt.axis([0, xmax + 10, 0, ymax + 10])  # [xmin, xmax, ymin, ymax]
+    # plt.axis([0, 205, 0, 600])  # [xmin, xmax, ymin, ymax]
     #plt.xticks(sizes, sizes, size='small')
+
+
+
     plt.ylabel('Resource units')
     plt.xlabel('Time steps')
 

@@ -29,8 +29,8 @@ def main():
                                         label=label,
                                         **base_params))
 
-        for horizon in [2, 4, 6, 8]:
-            for width in [50, 100, 500, 1000]:
+        for horizon in [2, 4, 6, 8, 10, 12]:
+            for width in [50, 100, 500, 1000, 5000]:
                 agent = MDPAgentConfiguration(population=1, horizon=horizon, width=width)
                 label = make_filename(agent='mdp', width=width, horizon=horizon, run=run)
                 exp.add_single(SingleExperiment(agents=[agent], label=label, **base_params))
