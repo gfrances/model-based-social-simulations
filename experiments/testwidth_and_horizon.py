@@ -1,7 +1,7 @@
 #! /usr/bin/env python
 # -*- coding: utf-8 -*-
 from src.helper import make_filename
-from src.experiment import AggregateExperiment, MDPAgentConfiguration, SingleExperiment
+from src.experiment import AggregateExperiment, MDPAgentConfiguration, SingleExperiment, RandomAgentConfiguration
 from src.sge_taskgen import SGETaskgen
 from random import randint
 
@@ -16,17 +16,23 @@ def main():
         x, y = randint(0, 49), randint(0, 49)
         initial_position = "{},{}".format(x, y)
 
+        base_params = dict(timesteps=200, runs=1,
+                           simulation_map='r25_s50x50',
+                           consumption_factor=2,
+                           agent_reproduction=False,
+                           agent_position=initial_position)
+
+        # The random agent baseline
+        random = RandomAgentConfiguration(population=1)
+        exp.add_single(SingleExperiment(agents=[random],
+                                        label="random_run_{}".format(run),
+                                        **base_params))
+
         for horizon in [2, 4, 6, 8]:
             for width in [50, 100, 500, 1000]:
                 agent = MDPAgentConfiguration(population=1, horizon=horizon, width=width)
-
-                exp.add_single(SingleExperiment(timesteps=200, runs=1,
-                                                simulation_map='r25_s50x50',
-                                                consumption_factor=2,
-                                                agent_reproduction=False,
-                                                agent_position=initial_position,
-                                                label=make_filename(width=width, horizon=horizon, run=run),
-                                                agents=[agent]))
+                label = make_filename(agent='mdp', width=width, horizon=horizon, run=run)
+                exp.add_single(SingleExperiment(agents=[agent], label=label, **base_params))
 
     exp.bootstrap()
 
