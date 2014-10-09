@@ -16,7 +16,7 @@ namespace Model
  * cell if that is not possible.
  * The operation of assessing whether there are enough resources is affected by an `alpha` parameter
  * that ranges from 0 to 1: If the current amount of resources multiplied by alpha is at least equal
- * to the agent's needs, then she considers the amoung suffices.
+ * to the agent's needs, then she considers that the amount is sufficient to stay.
  */
 class LazyController : public AgentController
 {

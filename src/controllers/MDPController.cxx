@@ -24,7 +24,7 @@ Engine::Action* MDPController::selectAction(const ModelAgent& agent) const {
 	RandomPolicy basePolicy(problem);
 	
 	// The UCT policy object that we will use to make the decisions.
-	UCTPolicy uctPolicy(basePolicy, _config.getWidth(), _config.getHorizon(), _config.getExplorationBonus(), false );
+	UCTPolicy uctPolicy(basePolicy, _config.getWidth(), _config.getHorizon(), _config.getExplorationBonus(), true );
 	
 	Problem::action_t actionIdx = uctPolicy(problem.init());
 	MoveAction::cptr action = problem.init().getApplicableActions().at(actionIdx);

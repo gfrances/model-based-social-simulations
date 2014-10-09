@@ -36,7 +36,10 @@ float MDPProblem::cost(const MDPState& s, action_t a) const {
 	
 	int maximumAttainable = s.getAgentResources() + availableResources;
 	int dailyConsumption = _agent.dailyResourceConsumption();
-	return maximumAttainable > dailyConsumption ? 100.0 / (float) maximumAttainable : 1000;
+// 	return maximumAttainable > dailyConsumption ?  (float) -2 * maximumAttainable : 1000;
+	int reproductionThreshold = _agent.reproductionThreshold();
+	
+	return maximumAttainable > dailyConsumption ?  10 * (reproductionThreshold - maximumAttainable) : 100 * reproductionThreshold;
 }
 
 void MDPProblem::next(const MDPState& s, action_t a, OutcomeVector& outcomes) const {
@@ -65,9 +68,10 @@ void MDPProblem::next(const MDPState& s, action_t a, OutcomeVector& outcomes) co
 	// 6. Check for the reproduction of the agent - Note that we do not actually reproduce the agent,
 	// only reduce the amount of resources, but this does not affect the cost, as we do not want to 
 	// induce the agent not to reproduce.
-    if (_agent.checkReproduction(resources)) {
-		resources = _agent.consumeResourcesOnReproduction(resources);
-	}
+	// Currently counterproductive, as the cost function it induces the agent not to reproduce
+//     if (_agent.checkReproduction(resources)) {
+		// resources = _agent.consumeResourcesOnReproduction(resources);
+// 	}
 	
 
 	// TODO: Using std::move for the resource raster, after implementing a move constructor, would increase performance.
