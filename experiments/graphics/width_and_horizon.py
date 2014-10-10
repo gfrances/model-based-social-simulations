@@ -4,9 +4,7 @@
 
 import argparse
 from collections import defaultdict
-from matplotlib.font_manager import FontProperties
 import matplotlib.pyplot as plt
-import numpy as np
 import sys
 
 sys.path.append('..')
@@ -24,6 +22,12 @@ AGENT_TYPES = {
     'mdp': 'MDP',
     'greedy': 'Greedy',
     'motionless': 'Null',
+}
+
+
+CSV_ROWS = {
+    'NUM_AGENTS': 1,
+    'RESOURCES': 2,
 }
 
 
@@ -64,7 +68,7 @@ def average_data(results):
     return {params: d / runs[params] for params, d in aggregated.items()}
 
 
-def load_data(experiment_dir, csv):
+def load_data(experiment_dir, csv, csv_col):
 
     results = dict()
 
@@ -74,7 +78,7 @@ def load_data(experiment_dir, csv):
 
         assert not hashable_params in results, "results already defined for parameters {}".format(hashable_params)
 
-        data = load_csv_data(csv + '/agent-{}.csv'.format(params['agent']))
+        data = load_csv_data(csv + '/agent-{}.csv'.format(params['agent']), csv_col)
         if data is not None:
             results[hashable_params] = data
 
@@ -84,8 +88,8 @@ def load_data(experiment_dir, csv):
     return avg_data
 
 
-def load_csv_data(csv_file):
-    res = utils.load_csv(csv_file, usecols=(1,))
+def load_csv_data(csv_file, csv_col):
+    res = utils.load_csv(csv_file, usecols=(csv_col,))
     return res if res.size != 1 else None
 
 
@@ -107,8 +111,8 @@ def filter_results(data, filter_keys=True, **kwargs):
 
 def plot_data(data, output_dir):
 
-    horizons = ['2', '4', '6', '8']
-    fig, axes = plt.subplots(2, 2, sharey=True)
+    horizons = ['2', '4', '6', '8', '10', '12']
+    fig, axes = plt.subplots(3, 2, sharey=True)
     plt.subplots_adjust(hspace=0.3)
     fig.tight_layout()
 
@@ -143,8 +147,9 @@ def plot_data(data, output_dir):
 
     axes[0].set_ylabel('Resource units', fontsize=10)
     axes[2].set_ylabel('Resource units', fontsize=10)
-    axes[2].set_xlabel('Time steps', fontsize=10)
-    axes[3].set_xlabel('Time steps', fontsize=10)
+    axes[4].set_ylabel('Resource units', fontsize=10)
+    axes[4].set_xlabel('Time', fontsize=10)
+    axes[5].set_xlabel('Time', fontsize=10)
 
     # params = sorted(data.keys())
     # xmax, ymax = 0, 0
@@ -160,17 +165,12 @@ def plot_data(data, output_dir):
     # plt.axis([0, 205, 0, 600])  # [xmin, xmax, ymin, ymax]
     #plt.xticks(sizes, sizes, size='small')
 
-
-
-    plt.ylabel('Resource units')
-    plt.xlabel('Time steps')
-
     save_figure(output_dir, 'population-dynamics{}'.format(''))
 
 
 def main():
     args = parse_arguments()
-    data = load_data(EXPERIMENTS_BASE_DIR + '/' + args.dir, args.csv)
+    data = load_data(EXPERIMENTS_BASE_DIR + '/' + args.dir, args.csv, CSV_ROWS['RESOURCES'])
     output_dir = './output'
     mkdirp(output_dir)
     plot_data(data, output_dir)

@@ -55,16 +55,12 @@ def write_code(code, filename):
 
 def make_filename(**kwargs):
     keys = sorted(kwargs.keys())
-    assert not any('_' in k for k in keys), "Underscores not allowed in parameter key names"
+    assert not any('_' in k for k in keys) and not any(isinstance(k, str) and '_' in k for k in kwargs.values()),\
+        "Underscores not allowed in parameter key names"
     return '.'.join('{}_{}'.format(k, kwargs[k]) for k in keys)
 
 
 def parse_filename(name):
-
-    # Temporary hack
-    if 'random_run' in name:
-        return {'agent': 'random', 'run': int(name[11:])}
-
     parameters = name.split('.')
     d = {}
     for param in parameters:

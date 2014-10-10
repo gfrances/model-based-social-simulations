@@ -32,14 +32,15 @@ def get_dataset_label(agent):
 
 
 ORDER = ['mdp', 'random', 'lazy', 'greedy', 'motionless']
+ORDER = ['mdp', 'random', "lazy", "greedy"]
 
 
 def load_run_data(run_name):
-    base_dir = '../'
+    base_dir = '../../analysis/'
     data = {}
-    for agent in DATASETS.keys():
+    for agent in ORDER:
         filename = get_dataset_name(agent, run_name)
-        data[agent] = utils.load_csv(base_dir + run_name + filename, usecols=(0, 1))
+        data[agent] = utils.load_csv(base_dir + filename, usecols=(0, 1))
     return data
 
 
@@ -85,12 +86,12 @@ def plot_data(data, output_dir):
 
     #plt.legend(loc=2,bbox_to_anchor=(0., 1.02, 1., .102))
     plt.legend(loc=2)
-    plt.axis([0, 100, 0, 1200])  # [xmin, xmax, ymin, ymax]
+    plt.axis([0, 200, 0, 50])  # [xmin, xmax, ymin, ymax]
     #plt.xticks(sizes, sizes, size='small')
     plt.ylabel('Population')
     plt.xlabel('Time steps')
 
-    save_figure(output_dir, 'population-dynamics{}'.format(''))
+    save_figure(output_dir, 'population-{}'.format(''))
 
 
 def plot(output_dir):

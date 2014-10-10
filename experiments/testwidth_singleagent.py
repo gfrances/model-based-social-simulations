@@ -24,7 +24,7 @@ def main():
 
             exp.add_single(SingleExperiment(timesteps=200, runs=1,
                                             simulation_map='r25_i0',
-                                            consumption_factor=2,
+                                            consumption=2,
                                             agent_reproduction=False,
                                             agent_position=initial_position,
                                             label="width_{}_run_{}".format(width, run),
