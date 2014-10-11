@@ -72,17 +72,18 @@ def parse_filename(name):
 
 def label_from_parameters(parameters):
     d = dict(parameters)
-    if d['agent'] == 'random':
-        return 'random'
+    if d['agent'] in ['random', 'motionless', 'lazy', 'greedy']:
+        return d['agent']
     elif d['agent'] == 'mdp':
         if 'horizon' in d and 'width' in d:
             return 'mdp[h={},w={}]'.format(d['horizon'], d['width'])
         elif 'horizon' in d:
             return 'mdp[h={}]'.format(d['horizon'])
         elif 'width' in d:
-            return 'mdp[w={}]'.format(d['width'])
+            # return 'mdp[w={}]'.format(d['width'])
+            return 'w={}'.format(d['width'])
         else:
             return 'mdp'
     else:
-        assert False, "TO DO"
+        raise RuntimeError("Unknown agent type: {}".format(d['agent']))
 

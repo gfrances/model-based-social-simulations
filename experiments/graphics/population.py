@@ -97,3 +97,6 @@ def plot_data(data, output_dir):
 def plot(output_dir):
     data = load_data()
     plot_data(data, output_dir)
+
+if __name__ == '__main__':
+    plot('output')

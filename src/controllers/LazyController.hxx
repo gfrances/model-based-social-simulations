@@ -26,7 +26,7 @@ protected:
 
 public:
 	LazyController(const ControllerConfig& config) : _alpha(config.alpha) {
-		assert(_alpha >0 && _alpha <= 1);
+		assert(_alpha > 0 && _alpha <= 1);
 	}
 	virtual ~LazyController() {}
 	
@@ -50,7 +50,7 @@ public:
 		
 		// We shuffle all the possible directions
 		std::vector<unsigned> indexes(MoveAction::DIRECTIONS.size() - 1);
-		std::iota(indexes.begin(), indexes.end(), 1);
+		std::iota(indexes.begin(), indexes.end(), 1); // Start at one, since we don't need to consider the current location.
 		std::random_shuffle(indexes.begin(), indexes.end());
 		
 		// And consider them one by one, stopping after the first which satisfies the agent's needs.

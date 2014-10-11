@@ -3,8 +3,8 @@ from matplotlib.font_manager import FontProperties
 import matplotlib.pyplot as plt
 
 STANDARD_PALETTE = ["#DD1E2F", "#EBB035", "#06A2CB", "#218559", "#D0C6B1", "#192823"]
-CONTRAST_PALETTE = ['r', 'b', 'y', 'c', 'g', 'm']
-LINE_PALETTE = ["-", "--", "-.", ":"]
+CONTRAST_PALETTE = ['r', 'b', 'y', 'g', 'c', 'm']
+LINE_PALETTE = [":", "--", "-.", "-"]
 MARKER_PALETTE = ["D", "o", "v", "^", "D", "s", "*"]
 MARKER_PALETTE2 = ["o", "D", "v", "^", "s", "*"]
 HATCHING_PALETTE = ['/', '-', '\\', '', 'x']
@@ -34,7 +34,7 @@ def save_figure(output_dir, filename, tightness=0, labelsize=None):
         plt.tick_params(axis='x', labelsize=labelsize)
         plt.tick_params(axis='y', labelsize=labelsize)
 
-    plt.savefig(output_dir + '/' + filename + ".pdf",  bbox_inches=tightness)
+    plt.savefig(output_dir + '/' + filename + ".pdf",  bbox_inches=tightness, dpi=600)
     plt.clf()  # Important to clear the figure for the next plot
 
 
