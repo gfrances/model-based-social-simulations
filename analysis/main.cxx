@@ -26,14 +26,15 @@ int main(int argc, char *argv[])
 
 	// Process the agent data
 	PostProcess::GlobalAgentStats agentResults;
-// 	agentResults.addAnalysis(std::make_shared<PostProcess::AgentNum>());
+	agentResults.addAnalysis(std::make_shared<PostProcess::AgentNum>());
 	agentResults.addAnalysis(std::make_shared<PostProcess::AgentMean>("resources"));
 // 	agentResults.addAnalysis(std::make_shared<PostProcess::AgentStdDev>("resources"));
 // 	agentResults.addAnalysis(std::make_shared<PostProcess::AgentSum>("resources"));
 // 	agentResults.addAnalysis(std::make_shared<PostProcess::AgentMean>("children"));
 	
 // 	const std::vector<std::string> TYPES = {"all", "mdp", "random"};
-	const std::vector<std::string> TYPES = {"mdp", "random"};
+// 	const std::vector<std::string> TYPES = {"mdp", "random"};
+	const std::vector<std::string> TYPES = {"mdp", "random", "lazy", "greedy"};
 	for (const auto& type:TYPES) {
 		std::string output(std::string(argv[2]) + "/agent-" + type + ".csv");
 		agentResults.apply(simRecord, output, type);
