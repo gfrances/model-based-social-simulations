@@ -2,6 +2,8 @@
 <config>  
 	<!-- Global simulation parameters -->
 	<output resultsFile="./data/model.h5" logsDir="./logs"/>
+
+	<!-- numSteps.value is the number of timesteps of the simulation -->
 	<numSteps value="100" serializeResolution="1"/>
 	<size width="50" height="50"/>
     <environment map="../maps/r25_s50x50.tif"/>

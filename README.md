@@ -5,13 +5,9 @@
 A number of examples showcasing the effect of model-based decision-making procedures on social simulations.
 
 
-## Simulation Parameters
-A number of simulation parameters can be specified in the `config.xml` file, that currenty include:
-
-* `size`: Size of the map, in number of cells.
-* `environment`: File with the initial distribution of the resources across the map cells.
-* `numSteps`: Number of time steps that the simulation will run.
-* `agents`: Initial number of agents in the simulation.
+## Getting Started
+The simulation parameters must be placed in `src/config.xml`. A sample configuration file is provided in `src/config.xml.sample`.
+To compile the simulation engine, `cd src && scons`.
 
 ## Dependencies
 
