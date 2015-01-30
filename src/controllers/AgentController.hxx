@@ -17,6 +17,7 @@ class ModelAgent;
 class AgentController
 {
 public:
+	typedef std::shared_ptr<AgentController> ptr;
 	typedef std::shared_ptr<const AgentController> cptr;
 	
 	AgentController() {}

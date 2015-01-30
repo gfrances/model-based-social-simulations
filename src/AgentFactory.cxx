@@ -10,6 +10,7 @@
 #include "controllers/GreedyController.hxx"
 #include "controllers/RuleBasedController.hxx"
 #include "controllers/RandomController.hxx"
+#include "controllers/AdaptiveController.hxx"
 #include <Environment.hxx>
 #include <memory>
 
@@ -43,6 +44,14 @@ void AgentFactory::createController(const ControllerConfig& config) {
 		controller = std::make_shared<GreedyController>();
  	} else if (type == "rule") {
 		controller = std::make_shared<RuleBasedController>();
+ 	} else if (type == "adaptive") {
+		AdaptiveController::ControllerSet subcontrollers = {
+			std::make_shared<RandomController>(),
+			std::make_shared<LazyController>(config),
+			std::make_shared<GreedyController>()
+		};
+		std::vector<float> probabilities{0.3, 0.3, 0.4};
+		controller = std::make_shared<AdaptiveController>(subcontrollers, probabilities);
  	} else {
  		throw Engine::Exception("Unknown controller type"); // Should never get here!
  	}
