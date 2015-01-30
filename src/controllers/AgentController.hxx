@@ -23,10 +23,25 @@ public:
 	AgentController() {}
 	virtual ~AgentController() {};
 	
+	//! By default, controllers are stateless and do not change upon reproduction
+	//! This method can be overriden to change that behaviour.
+	virtual bool doesReproduce() const { return false; }
+	
+	//! By default, there is no reproduction. Override this method if that is not the case.
+	virtual AgentController::cptr reproduce() const { return nullptr; }
+	
+	
 	virtual std::string getType() const = 0;
 	
 	//! Select the action to be performed by the agent according to the particular logic of the controller.
 	virtual Engine::Action* selectAction(const ModelAgent& agent) const = 0;
+	
+	//! Prints a representation of the object to the given stream. By default, we simply print the type of agent.
+	friend std::ostream& operator<<( std::ostream &os, const AgentController&  controller) { return controller.print(os); }
+	virtual std::ostream& print(std::ostream& os) const { 
+		os << getType();
+		return os;
+	}
 };
 
 }

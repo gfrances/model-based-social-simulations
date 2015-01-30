@@ -67,7 +67,8 @@ void ModelAgent::reproduceAgent() {
 	
 	Environment* world = static_cast<Environment *>(getWorld());
 	
-	ModelAgent* child = new ModelAgent(id, world, getController()); // We reuse the same controller
+	AgentController::cptr controller = getController()->doesReproduce() ? getController()->reproduce() : getController();
+	ModelAgent* child = new ModelAgent(id, world, controller); // We reuse the same controller
 	child->setPosition(getPosition()); // The new agent starts at the same position
 	
 	world->addAgent(child); // Add the agent to the world
@@ -127,7 +128,7 @@ Engine::DynamicRaster& ModelAgent::getResourceRaster() {
 std::ostream& ModelAgent::print(std::ostream& os) const {
 	os << getId();
 	
-	os << " [" << getController()->getType() << "]";
+	os << " [" << *getController() << "]";
 	
 	if (!exists()) os << " [DEAD!]";
 	if (!getWorld()) os << " [DETACHED!]";
