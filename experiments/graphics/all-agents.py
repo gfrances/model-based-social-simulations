@@ -4,6 +4,7 @@
 
 import argparse
 import sys
+import matplotlib
 from graphics.common import AGENT_ORDER
 from graphics.lib.utils import average_data, filter_results, load_csv_data, create_subplot
 from graphics.width_and_horizon import CSV_ROWS
@@ -60,9 +61,10 @@ def load_data(experiment_dir, csv, csv_col, restrict=None):
 
 
 def plot_lambda_analysis(data, output_dir, autocorrelation):
-    axes = create_subplot(2, 2, figsize=(9, 6))
+    axes = create_subplot(1, 1, figsize=(9, 9))
 
     consumptions = ['2', '3', '4', '5']
+    consumptions = ['4']
 
     for index, consumption in enumerate(consumptions):
         stylecycler = get_stylecycler()
@@ -83,28 +85,29 @@ def plot_lambda_analysis(data, output_dir, autocorrelation):
                              label=label_from_parameters(param))
 
             #plt.legend(loc=2,bbox_to_anchor=(0., 1.02, 1., .102))
-            axes[index].legend(loc=legend_locs[index], fontsize=10, ncol=ncols[index])
-
-            axes[index].set_title(r'$\lambda$={}'.format(consumption), fontsize=12)
-
-            axes[index].tick_params(axis='both', which='both', labelsize=8)  # Change the tick labels fontsize
+            axes[index].legend(loc=legend_locs[index], fontsize=20, ncol=ncols[index])
+            axes[index].set_title(r'$\lambda$={}'.format(consumption), fontsize=20)
+            axes[index].tick_params(axis='both', which='both', labelsize=18)  # Change the tick labels fontsize
 
             # axes[index].axis([0, 200, 0, 1000])  # [xmin, xmax, ymin, ymax]
 
     # axes[0].set_xlim([0, 200])
 
-    axes[0].set_ylabel('Population', fontsize=12)
-    axes[2].set_ylabel('Population', fontsize=12)
-    axes[2].set_xlabel('Time', fontsize=12)
-    axes[3].set_xlabel('Time', fontsize=12)
+    # axes[0].set_ylabel('Population', fontsize=12)
+    # axes[2].set_ylabel('Population', fontsize=12)
+    # axes[2].set_xlabel('Time', fontsize=12)
+    # axes[3].set_xlabel('Time', fontsize=12)
+
+    axes[0].set_ylabel('Population', fontsize=20)
+    axes[0].set_xlabel('Time', fontsize=20)
 
     save_figure(output_dir, 'population-dynamics.c_{}'.format(autocorrelation))
 
 
 def plot_consumption_analysis(data, output_dir, consumption):
-    axes = create_subplot(1, 3, figsize=(12, 4))
+    axes = create_subplot(1, 1, figsize=(9, 9))
 
-    autocorrelations = ['1', '10', '25']
+    autocorrelations = ['25']#, '10', '25']
 
     for index, autocorrelation in enumerate(autocorrelations):
         stylecycler = get_stylecycler()
@@ -121,23 +124,27 @@ def plot_consumption_analysis(data, output_dir, consumption):
                              linewidth=2,  # Increase the linewidth for this graphic, which will be displayed very small
                              label=label_from_parameters(param))
 
-            #plt.legend(loc=2,bbox_to_anchor=(0., 1.02, 1., .102))
-            # axes[index].legend(bbox_to_anchor=(1, 0.9), fontsize=8, ncol=2)
-            axes[index].legend(loc=2, fontsize=10, ncol=1)
-            axes[index].set_title(r'autocorrelation={}'.format(autocorrelation), fontsize=12)
-            axes[index].tick_params(axis='both', which='both', labelsize=8)  # Change the tick labels fontsize
+        #plt.legend(loc=2,bbox_to_anchor=(0., 1.02, 1., .102))
+        # axes[index].legend(bbox_to_anchor=(1, 0.9), fontsize=8, ncol=2)
+        axes[index].legend(loc=2, fontsize=20, ncol=1)
+        axes[index].set_title(r'autocorrelation={}'.format(autocorrelation), fontsize=20)
+        axes[index].tick_params(axis='both', which='both', labelsize=18)  # Change the tick labels fontsize
 
-            axes[index].axis([0, 1000, 0, 350])  # [xmin, xmax, ymin, ymax]
+        axes[index].axis([0, 1000, 0, 350])  # [xmin, xmax, ymin, ymax]
+        axes[index].set_ylabel('Population', fontsize=20)
 
-    axes[0].set_ylabel('Population', fontsize=12)
     for axe in axes:
-        axe.set_xlabel('Time', fontsize=12)
+        axe.set_xlabel('Time', fontsize=20)
 
     save_figure(output_dir, 'population-dynamics.lambda_{}'.format(consumption))
 
 
 def main():
     args = parse_arguments()
+
+    matplotlib.rcParams['ps.useafm'] = True
+    matplotlib.rcParams['pdf.use14corefonts'] = True
+    matplotlib.rcParams['text.usetex'] = True
 
     exp_dir = EXPERIMENTS_BASE_DIR + '/' + args.dir
     data = load_data(exp_dir, args.csv, CSV_ROWS['POPULATION'])

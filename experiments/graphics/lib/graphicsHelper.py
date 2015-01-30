@@ -34,7 +34,8 @@ def save_figure(output_dir, filename, tightness=0, labelsize=None):
         plt.tick_params(axis='x', labelsize=labelsize)
         plt.tick_params(axis='y', labelsize=labelsize)
 
-    plt.savefig(output_dir + '/' + filename + ".pdf",  bbox_inches=tightness, dpi=600)
+    plt.tight_layout(w_pad=1, h_pad=1.0)
+    plt.savefig(output_dir + '/' + filename + ".pdf", dpi=1200)
     plt.clf()  # Important to clear the figure for the next plot
 
 

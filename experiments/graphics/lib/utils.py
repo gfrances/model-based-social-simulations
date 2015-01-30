@@ -93,6 +93,7 @@ def load_csv_data(csv_file, csv_col):
 
 def create_subplot(nrows, ncols, figsize=(8, 8), **kwargs):
     fig, axes = plt.subplots(nrows, ncols, figsize=figsize, dpi=600, **kwargs)
-    plt.subplots_adjust(hspace=0.3)
+    # plt.subplots_adjust(hspace=0.3, wspace=1.6)
     fig.tight_layout()
+    return [axes]
     return axes.ravel()
